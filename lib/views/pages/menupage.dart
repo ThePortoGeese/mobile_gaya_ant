@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:mobile_gaya_ant/bluetoothmodule.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../widgets/bluetoothmenu.dart';
 import '../dialogs/circularloading.dart';
@@ -20,7 +21,7 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-
+  //BluetoothModule bluetoothNotifier = BluetoothModule();
 
   //THIS JUST HOLDS THE SELECTED ITEM OF THE LANGUAGE POP UP MENU BUTTON
   LanguageItem? selectedItem = LanguageItem.pt;
@@ -39,10 +40,10 @@ class _MenuPageState extends State<MenuPage> {
   void initState(){
     super.initState();
     //WHEN THE USER OPENS THE APP, I TRY TO INITIALIZE ITS BLUETOOTH FUNCTIONS
+    initializeBluetooth();
   }
 
    Future<void> initializeBluetooth() async{
-    //TODO: SET BUTTON OFF
     setState(() {
       bluetoothButtonEnabled = false;
     });
