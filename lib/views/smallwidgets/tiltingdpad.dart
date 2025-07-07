@@ -4,13 +4,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mobile_gaya_ant/views/smallwidgets/antactionbutton.dart';
 
+
 enum Direction {up, right, down, left, none}
 
 class TiltingDPad extends StatefulWidget {
   const TiltingDPad({
     super.key,
   });
-
   @override
   State<TiltingDPad> createState() => _TiltingDPadState();
 }

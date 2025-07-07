@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_gaya_ant/bluetoothmodule.dart';
 import 'views/pages/menupage.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
  
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider
+    (
+      create: (_) => BluetoothModule(),
+      child: const MyApp()
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {

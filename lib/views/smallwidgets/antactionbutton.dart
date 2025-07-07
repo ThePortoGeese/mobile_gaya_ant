@@ -7,6 +7,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:mobile_gaya_ant/bluetoothmodule.dart';
 import 'package:mobile_gaya_ant/data/values.dart';
 import 'package:mobile_gaya_ant/views/dialogs/normalalert.dart';
+import 'package:provider/provider.dart';
 
 class AntActionButton extends StatefulWidget {
   const AntActionButton({
@@ -52,8 +53,8 @@ class _AntActionButtonState extends State<AntActionButton> {
 
  void sendBytes(Uint8List i, BuildContext context) async{
     try {
-      bluetoothConnection.value?.output.add(i);
-      await bluetoothConnection.value?.output.allSent;
+      context.read<BluetoothModule>().bluetoothConnection?.output.add(i);
+      await context.read<BluetoothModule>().bluetoothConnection?.output.allSent;
       debugPrint("Sent ${i.toString()}");
       return;
     } catch (e){
@@ -61,6 +62,6 @@ class _AntActionButtonState extends State<AntActionButton> {
       showDialog(context: context, builder: (context) {
         return Normalalert(titleText: "ERRO BLUETOOTH", bodyText: "Não foi possível estabelecer conexão com o dispositivo. Emparelhe-o de novo.", titleStyle: alertTitleStyle);
       },);
-      await bluetoothConnection.value?.close();
+      context.read<BluetoothModule>().disconnectFromDevice();
     }
   } 

@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-enum BluetoothStatus {
-  disconnected, connected, errorConnection, errorPermission1,errorPermission2, errorBonding,errorSearch, off, loading, notAvailable, waiting, uknown
+enum BTState {
+  disconnected, connected, errorConnection, errorPermission1,errorPermission2, errorBonding,errorSearch, off,loadingDevices, notAvailable, waiting, uknown
 }
 
 
 class BluetoothModule with ChangeNotifier{
-  BluetoothStatus btState = BluetoothStatus.off;
+  BTState btState = BTState.off;
   BluetoothConnection? bluetoothConnection;
   Map<String, String> deviceInfo = {};
+  String? currentMacAdress = "";
 
   Future<void> initializeBluetooth() async{
-    //TODO: SET BUTTON OFF
-
-    btState = BluetoothStatus.loading;
-    notifyListeners();
-
     FlutterBluetoothSerial.instance.onStateChanged().listen((newState){
         handleBluetoothStateChange(newState);
       }
@@ -25,7 +21,7 @@ class BluetoothModule with ChangeNotifier{
     
     //I need to check if the user can even access bluetooth
     if((await checkBluetoothAvailability() )== false){
-      btState = BluetoothStatus.notAvailable;
+      btState = BTState.notAvailable;
       notifyListeners();
     }
 
@@ -33,8 +29,7 @@ class BluetoothModule with ChangeNotifier{
       final status = await Permission.bluetoothConnect.request();
 
       if(status == PermissionStatus.denied){
-        // TODO: SHOW ERROR
-        btState = BluetoothStatus.errorPermission1;
+        btState = BTState.errorPermission1;
         notifyListeners();
       }
     }
@@ -47,28 +42,10 @@ class BluetoothModule with ChangeNotifier{
   }
 
   void handleBluetoothStateChange(BluetoothState newState) async{
-    //Immediately disables the bluetooth button when changes happen
-    //Its a precautionary measure so the discovery proccess of new devices doesnt get bugged
-
     if(newState == BluetoothState.STATE_OFF){
-      btState = BluetoothStatus.off;
-      /*await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => AlertDialog(
-        title: Text("ERRO BLUETOOTH",  style: alertTitleStyle),
-        content: Text("Parece que o seu bluetooth está desligado, pretende ligá-lo?"),
-        actions: [
-          TextButton(onPressed: (){
-            requestEnableBluetooth();
-            Navigator.of(context).pop();
-          }, child: Text("Sim")),
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-          }, child: Text("Não")),
-        ],
-      ),);*/
+      btState = BTState.off;
     } else if (newState == BluetoothState.STATE_ON){
-      btState = BluetoothStatus.disconnected;
-      //If the bt is on, we caan finally enable the button
-      // TODO: ENABLE BT
+      btState = BTState.disconnected;
     }
     notifyListeners();
   }
@@ -92,33 +69,27 @@ class BluetoothModule with ChangeNotifier{
         final status = await Permission.bluetoothScan.request();
 
         if(status != PermissionStatus.granted){
-          btState = BluetoothStatus.errorPermission2;
+          btState = BTState.errorPermission2;
           return;
         }
       }
     } catch (e){
-      btState = BluetoothStatus.errorSearch;
+      btState = BTState.errorSearch;
     }
 
-    /*showDialog(context: context, barrierDismissible: false, builder: (context) {
-      return CircularLoading(loadingText: "A procurar dispositivos");
-    },);*/
 
     deviceInfo.clear();
 
-    btState = BluetoothStatus.loading;
+    btState = BTState.loadingDevices;
     notifyListeners();
-
-    //TODO: CIrcular Loading
 
     await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
       deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
       notifyListeners();
     }
 
-    btState = BluetoothStatus.waiting;
+    btState = BTState.waiting;
     notifyListeners();
-    //TODO: BTN
   }
 
   Future<void> connectToDevice(String mac) async {
@@ -126,18 +97,19 @@ class BluetoothModule with ChangeNotifier{
       if(!(await FlutterBluetoothSerial.instance.getBondStateForAddress(mac) == BluetoothBondState.bonded)){
         bool? v = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(mac, pin: '1234');
         if(!(v??false)){
-          btState = BluetoothStatus.errorBonding;
+          btState = BTState.errorBonding;
           notifyListeners();
         }
       }
       bluetoothConnection = await BluetoothConnection.toAddress(mac);
       if(bluetoothConnection?.isConnected ?? false){
-        btState = BluetoothStatus.connected;
+        btState = BTState.connected;
+        currentMacAdress = mac;
       } else {
-        btState = BluetoothStatus.errorConnection;
+        btState = BTState.errorConnection;
         }
     } catch (e){
-        btState = BluetoothStatus.uknown;
+        btState = BTState.uknown;
     }
     notifyListeners();
   }
@@ -145,7 +117,8 @@ class BluetoothModule with ChangeNotifier{
   void disconnectFromDevice() async{
     await bluetoothConnection?.finish();
     
-    btState = BluetoothStatus.disconnected;
+    btState = BTState.disconnected;
+    currentMacAdress = "";
     notifyListeners();
   }
 }

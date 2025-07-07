@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_gaya_ant/bluetoothmodule.dart';
 import 'package:mobile_gaya_ant/views/smallwidgets/antactionbutton.dart';
 import 'package:mobile_gaya_ant/views/smallwidgets/tiltingdpad.dart';
+import 'package:provider/provider.dart';
 
-import '../../data/values.dart';
 
 class AntMovingControls extends StatefulWidget {
   const AntMovingControls({
@@ -18,11 +19,15 @@ class _AntMovingControlsState extends State<AntMovingControls> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(valueListenable: bluetoothConnection, builder: (context, value, child) => Visibility(visible: true,
+    return ListenableBuilder(listenable: context.read<BluetoothModule>(), builder: (context, child) => Visibility(visible: (context.read<BluetoothModule>().bluetoothConnection?.isConnected??false),
       child: Padding(
         padding: const EdgeInsets.only(left: 30, right: 30),
         child: Column(
           children: [
+            Row(children: [
+
+
+            ],),
             SizedBox(height: 10),
             Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

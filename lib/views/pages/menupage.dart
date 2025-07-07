@@ -1,8 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:mobile_gaya_ant/bluetoothmodule.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import '../widgets/bluetoothmenu.dart';
 import '../dialogs/circularloading.dart';
 import '../dialogs/normalalert.dart';
@@ -21,107 +21,81 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-  //BluetoothModule bluetoothNotifier = BluetoothModule();
 
   //THIS JUST HOLDS THE SELECTED ITEM OF THE LANGUAGE POP UP MENU BUTTON
   LanguageItem? selectedItem = LanguageItem.pt;
   //THIS IS THE ICON OF THE LANGUAGE BUTTON
   Widget? currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
   //THIS MAP HOLDS THE MAC ADDRESS OF THE DEVICE AS ITS KEY AND THE NAME AS ITS VALUE
-  Map<String, String> deviceInfo = {};
-
-
 
   //THESE ARE VARIABLES WITH THE VALUES FOR BUTTONS AND LABELS
-  String bluetoothStatus = "DESCONECTADO";
+  String status = "DESCONECTADO";
   String bluetoothButtonText = "Conectar";
 
   @override
   void initState(){
     super.initState();
     //WHEN THE USER OPENS THE APP, I TRY TO INITIALIZE ITS BLUETOOTH FUNCTIONS
-    initializeBluetooth();
+    context.read<BluetoothModule>().addListener(handleBtStateChange);
+    context.read<BluetoothModule>().initializeBluetooth();
   }
 
-   Future<void> initializeBluetooth() async{
-    setState(() {
-      bluetoothButtonEnabled = false;
-    });
-
-    FlutterBluetoothSerial.instance.onStateChanged().listen((newState){
-        handleBluetoothStateChange(newState);
-      }
-    );
-    
-    //I need to check if the user can even access bluetooth
-    await checkBluetoothAvailability();
-
-    if(!(await Permission.bluetoothConnect.isGranted)){
-      final status = await Permission.bluetoothConnect.request();
-
-      if(status == PermissionStatus.denied){
-        // TODO: SHOW ERROR
- 
-      }
+  void handleBtStateChange() async{
+    if(!mounted) return;
+    switch (context.read<BluetoothModule>().btState){
+      case BTState.connected:
+        setState(() {
+          availableDevicesListIsVisible = false;
+          bluetoothButtonText = "Desconectar";
+          status = "CONECTADO A ${context.read<BluetoothModule>().deviceInfo[context.read<BluetoothModule>().currentMacAdress]}";
+        }); 
+      case BTState.disconnected:
+        context.read<BluetoothModule>().bluetoothConnection = null;
+        setState(() {
+          bluetoothButtonEnabled = true;
+          bluetoothButtonText = "Conectar";
+          status = "DESCONECTADO";
+        });
+      case BTState.off:
+        setState(() {
+          bluetoothButtonEnabled = false;
+        });
+        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => AlertDialog(
+          title: Text("ERRO BLUETOOTH",  style: alertTitleStyle),
+          content: Text("Parece que o seu bluetooth está desligado, pretende ligá-lo?"),
+          actions: [
+            TextButton(onPressed: (){
+              context.read<BluetoothModule>().requestEnableBluetooth();
+              Navigator.of(context).pop();
+            }, child: Text("Sim")),
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: Text("Não")),
+          ],
+        ),);
+      case BTState.errorBonding:
+        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+          Normalalert(titleText: "ERRO DE EMPARELHAMENTO", bodyText: "Houve um erro a emparelhar o dispositivo",titleStyle: alertTitleStyle));
+      case BTState.errorConnection:
+          await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+           Normalalert(titleText: "ERRO DE CONEXÃO", bodyText: "Houve um erro a conectar com o dispositivo",titleStyle: alertTitleStyle));
+      case BTState.errorPermission1: case BTState.errorPermission2:
+        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+        Normalalert(titleText: "ERRO DE PERMISSÃO", bodyText: "Não aceitu as permissões. Vamos fechar agora",titleStyle: alertTitleStyle));
+        exit(0);
+      case BTState.notAvailable:
+        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+        Normalalert(titleText: "NÃO SUPORTA BLUETOOTH", bodyText: "O seu dispositivo não têm tecnologia bluetooth. Vamos fechar agora",titleStyle: alertTitleStyle));
+        exit(0);
+      case BTState.loadingDevices:
+        break;
+      case BTState.waiting:
+        Navigator.of(context).pop();
+      default:
+        debugPrint("Didnt implement ${context.read<BluetoothModule>().btState.toString()}");
     }
-    //I try to see what state is bluetooth on
-
-    final initialBTState = await FlutterBluetoothSerial.instance.state;
-
-    //Handles the bt state of the application
-    handleBluetoothStateChange(initialBTState);
   }
 
-  void handleBluetoothStateChange(BluetoothState newState) async{
-    //Immediately disables the bluetooth button when changes happen
-    //Its a precautionary measure so the discovery proccess of new devices doesnt get bugged
-    setState(() {
-      bluetoothButtonEnabled = false;
-    });
-    if(newState == BluetoothState.STATE_OFF){
-      await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => AlertDialog(
-        title: Text("ERRO BLUETOOTH",  style: alertTitleStyle),
-        content: Text("Parece que o seu bluetooth está desligado, pretende ligá-lo?"),
-        actions: [
-          TextButton(onPressed: (){
-            requestEnableBluetooth();
-            Navigator.of(context).pop();
-          }, child: Text("Sim")),
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-          }, child: Text("Não")),
-        ],
-      ),);
-    } else if (newState == BluetoothState.STATE_ON){
-      //If the bt is on, we caan finally enable the button
-      setState(() {
-        bluetoothButtonEnabled = true;
-      });
-    }
-  }
-
-  void requestEnableBluetooth() async{
-    //Just requests the bt permission from the user
-    await FlutterBluetoothSerial.instance.requestEnable();
-  }
-
-  Future<void> checkBluetoothAvailability() async {
-    //This functions checks if the device even has bt, if it doesnt, it closes
-    final bool? isAvailable = await FlutterBluetoothSerial.instance.isAvailable;
-
-    if ( isAvailable == false){
-      if(!mounted) return;
-      await showDialog<void>(context: context, barrierDismissible:false, builder:(context) => Normalalert(
-        bodyText: "O seu dispositivo não suporta a tecnologia bluetooth.\nIremos fechar a aplicação agora.", 
-        titleText: "ERRO BLUETOOTH", 
-        titleStyle: alertTitleStyle)
-      );
-      exit(0);
-    }
-
-    return;
-  }
-  
   //THIS VARIABLE JUST CONTROLS IF THE DEVICE LIST IS VISIBLE OR NOT
   bool availableDevicesListIsVisible = false;
 
@@ -171,37 +145,31 @@ class _MenuPageState extends State<MenuPage> {
             )
         ],
       ),
-      body: ValueListenableBuilder(
-        valueListenable: bluetoothConnection,
-        builder: (context, value, child) {
-          if(!(value?.isConnected??false)){
-              deviceConnected = false;
-              bluetoothButtonText = "Conectar";
-              currentMacAdress = "";
-              bluetoothConnection.value = null;
-              bluetoothStatus = "DESCONECTADO";
-          } 
-
-          return Expanded(
-            child: SingleChildScrollView(
-                padding: EdgeInsets.only(bottom: 20),
-                child: Column(
-                  children: <Widget>[
-                    BluetoothMenu(
-                      bluetoothButtonEnabled: bluetoothButtonEnabled,
-                      status: bluetoothStatus,
-                      buttonText: bluetoothButtonText,
-                      devices: deviceInfo,
-                      isListVisible: availableDevicesListIsVisible,
-                      onConnectPressed: handleConnectButtonPressed,
-                      onDeviceTap: handleDeviceTap,
-                      deviceConnected: deviceConnected,
-                      onDisconnectPressed: handleDisconnectButtonPressed,
+      body: ListenableBuilder(
+        listenable: context.read<BluetoothModule>(),
+        builder: (context, child) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Column(
+                      children: <Widget>[
+                        BluetoothMenu(
+                          bluetoothButtonEnabled: bluetoothButtonEnabled,
+                          status: status,
+                          buttonText: bluetoothButtonText,
+                          isListVisible: availableDevicesListIsVisible,
+                          onConnectPressed: handleConnectButtonPressed,
+                          onDeviceTap: handleDeviceTap,
+                          onDisconnectPressed: handleDisconnectButtonPressed,
+                        ),
+                        AntMovingControls()
+                      ],
                     ),
-                    AntMovingControls()
-                  ],
-                ),
+                  ),
               ),
+            ],
           );
         }
       ),
@@ -210,135 +178,50 @@ class _MenuPageState extends State<MenuPage> {
 
   }
   bool deviceConnected = false;
-  bool bluetoothButtonEnabled = true;
+  bool bluetoothButtonEnabled = false;
 
   //ZE BLUETOOTH DEVICE HAS BEEN CONNECTED
 
-  void deviceSearch() async{
-    try{
-      if(!(await Permission.bluetoothScan.isGranted)){
-        final status = await Permission.bluetoothScan.request();
-
-        if(status != PermissionStatus.granted){
-          setState(() {
-            bluetoothButtonText = "Conectar";
-          });
-          return;
-        }
-      }
-    } catch (e){
-      if(!mounted) return;
-      await showDialog<void>(context: context, barrierDismissible:false, builder:(context) => Normalalert(
-        bodyText: "Erro desconhecido ao procurar dispositivos. Código de erro: $e", 
-        titleText: "ERRO AO DISCONECTAR", 
-        titleStyle: alertTitleStyle)
-      );
-    }
-
-    setState(() {
-      bluetoothButtonEnabled = false;
-    });
-    if(!mounted) return;
-    showDialog(context: context, barrierDismissible: false, builder: (context) {
-      return CircularLoading(loadingText: "A procurar dispositivos");
-    },);
-
-    await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
-      if(!mounted) return;
-
-      setState(() {
-        deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
-      });
-    }
-    if(!mounted) return;
-    Navigator.of(context).pop();
-    setState(() {
-      bluetoothButtonText = '↓';
-      bluetoothButtonEnabled = true;
-    });
-  }
-
-  void handleConnectButtonPressed() {
+  void handleConnectButtonPressed() async {
     setState(() {
       availableDevicesListIsVisible = !availableDevicesListIsVisible;
       if (availableDevicesListIsVisible) {
         bluetoothButtonText = "↓";
-        deviceInfo.clear();
-        deviceSearch();
       } else {
         bluetoothButtonText = "Conectar";
       }
     });
+    if(availableDevicesListIsVisible){
+      showDialog(context: context, barrierDismissible: false, builder: (context) {
+        return CircularLoading(loadingText: "A procurar dispositivos");
+      },);  
+      context.read<BluetoothModule>().deviceSearch();
+    }
   }
 
-  String currentMacAdress = "";
 
   void handleDisconnectButtonPressed() async{
     setState(() {
       deviceConnected = false;
     });
-    await bluetoothConnection.value?.finish();
+
+    context.read<BluetoothModule>().disconnectFromDevice();
+
     if(!mounted) return;
     showDialog(context: context, builder: (context) {
-      return  Normalalert(titleText: "DISCONECTADO",bodyText: "Disconectado do dispositivo ${deviceInfo[currentMacAdress]}",);
+      return  Normalalert(titleText: "DISCONECTADO",bodyText: "Disconectado do dispositivo ${context.read<BluetoothModule>().deviceInfo[context.read<BluetoothModule>().currentMacAdress]}",);
     },);
   }
 
   void handleDeviceTap(String mac) async {
     showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
-      return CircularLoading(loadingText: "A conectar ao dispositivo ${deviceInfo[mac]}");
+      return CircularLoading(loadingText: "A conectar ao dispositivo ${context.read<BluetoothModule>().deviceInfo[mac]}");
     },);
-    try {
-      if(!(await FlutterBluetoothSerial.instance.getBondStateForAddress(mac) == BluetoothBondState.bonded)){
-        bool? v = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(mac, pin: '1234');
-        if(!(v??false)){
-          if(!mounted) return;
-          await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => Normalalert(
-          bodyText: "Erro ao emparelhar o dispositivo", 
-          titleText: "ERRO DE EMPARELHAMENTO", 
-          titleStyle: alertTitleStyle)
-        );
-        }
-      }
-      bluetoothConnection.value = await BluetoothConnection.toAddress(mac);
-      if(!mounted) return;
-      if(bluetoothConnection.value?.isConnected ?? false){
-        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => Normalalert(
-          bodyText: "Conectado ao dispositivo ${deviceInfo[mac]}", 
-          titleText: "Sucesso!")
-        );
-        if(!mounted) return;
-        setState(() {
-          bluetoothStatus = "CONECTADO A ${deviceInfo[mac]}";
-          deviceConnected = true;
-          bluetoothButtonText = "Desconectar";
-          currentMacAdress = mac;
-          availableDevicesListIsVisible = false;
-        });
+    
+    await context.read<BluetoothModule>().connectToDevice(mac);
 
-
-        /*bluetoothConnection.value?.input!.listen((Uint8List data) {
-          debugPrint("Got data:");
-          for (var b in data) {
-            debugPrint('Rx: $b');      
-          }
-        }).onDone(() { /*…*/ });*/
-      } else {
-        if(!mounted) return;
-        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => Normalalert(
-          bodyText: "Não foi possível conectar ao dispositivo ${deviceInfo[mac]}", 
-          titleText: "ERRO DE CONEXÃO",
-          titleStyle: alertTitleStyle));
-        }
-    } catch (e){
-      if(!mounted) return;
-        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => Normalalert(
-          bodyText: "Erro: $e", 
-          titleText: "ERRO DESCONHECIDO",
-          titleStyle: alertTitleStyle));
-    }
-      if(!mounted) return;
-      Navigator.of(context).pop();
+    if(!mounted) return;
+    Navigator.of(context).pop();
     }
   }
 
