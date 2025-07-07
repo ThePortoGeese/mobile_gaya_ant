@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +14,7 @@ class BluetoothModule with ChangeNotifier{
   BluetoothConnection? bluetoothConnection;
   Map<String, String> deviceInfo = {};
   String? currentMacAdress = "";
+  String lastSender = "";
 
   Future<void> initializeBluetooth() async{
     FlutterBluetoothSerial.instance.onStateChanged().listen((newState){
@@ -65,7 +68,7 @@ class BluetoothModule with ChangeNotifier{
   void deviceSearch() async{
     //Request BT Permission
     try{
-      if(!(await Permission.bluetoothScan.isGranted)){
+      if(!(await Permission.bluetoothScan.isGranted) || !(await Permission.bluetoothScan.isLimited)){
         final status = await Permission.bluetoothScan.request();
 
         if(status != PermissionStatus.granted){
@@ -121,4 +124,17 @@ class BluetoothModule with ChangeNotifier{
     currentMacAdress = "";
     notifyListeners();
   }
+
+   void sendBytes(Uint8List i, String id) async{
+    try {
+      bluetoothConnection?.output.add(i);
+      await bluetoothConnection?.output.allSent;
+      debugPrint("Sent ${i.toString()}");
+      lastSender = id;
+      notifyListeners();
+      return;
+    } catch (e){
+      disconnectFromDevice();
+    }
+  } 
 }

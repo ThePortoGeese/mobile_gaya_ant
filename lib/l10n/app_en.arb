@@ -1,0 +1,12 @@
+{
+    "@@locale": "pt",
+    "language": "Português",
+    "@language": {
+        "description": "Seleção de Língua"
+    },
+    "appBarText":"Robot Ant Control",
+    "connectionStatus": "Estado de Conexão",
+    "disconnectedStatus": "DESCONECTADO",
+    "connect": "Conectar", 
+    "disconnect": "Disconectar"
+}

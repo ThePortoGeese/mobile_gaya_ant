@@ -2,7 +2,9 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/views/smallwidgets/antactionbutton.dart';
+import 'package:provider/provider.dart';
+
+import '../../bluetoothmodule.dart';
 
 
 enum Direction {up, right, down, left, none}
@@ -11,6 +13,7 @@ class TiltingDPad extends StatefulWidget {
   const TiltingDPad({
     super.key,
   });
+  final String id = "TiltingDPad";
   @override
   State<TiltingDPad> createState() => _TiltingDPadState();
 }
@@ -22,29 +25,40 @@ class _TiltingDPadState extends State<TiltingDPad> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onPanStart: (details) => update(details),
-      onPanUpdate: (details) => update(details),
-      onPanEnd: (_) => resetAnt(),
-      onLongPressStart: (details) => update(details),
-      onLongPressEnd: (_) => resetAnt(),
-      onLongPressCancel: () => resetAnt(),
-      onTapDown: (details) => update(details),
-      onTapUp: (_)=> resetAnt(),
-      child: Container(
-        height: radius*2,
-        width: radius*2,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xffFB923C)),
-        child: CustomPaint(
-          painter: DPadPainter(dir: currentDir, radius: radius, sensitivity: sensitivity),
-        )
-      ),
+    return Consumer<BluetoothModule>(
+      builder: (context, btm, child) {
+        if(btm.bluetoothConnection != null){
+          if(btm.lastSender != widget.id){
+            currentDir = Direction.none;
+          }
+        } else {
+          currentDir = Direction.none;
+        }
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onPanStart: (details) => update(details),
+          onPanUpdate: (details) => update(details),
+          onPanEnd: (_) => resetAnt(),
+          onLongPressStart: (details) => update(details),
+          onLongPressEnd: (_) => resetAnt(),
+          onLongPressCancel: () => resetAnt(),
+          onTapDown: (details) => update(details),
+          onTapUp: (_)=> resetAnt(),
+          child: Container(
+            height: radius*2,
+            width: radius*2,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xffFB923C)),
+            child: CustomPaint(
+              painter: DPadPainter(dir: currentDir, radius: radius, sensitivity: sensitivity),
+            )
+          ),
+        );
+      }
     );
   }
 
   void resetAnt() {
-    sendBytes(Uint8List.fromList([5]), context);
+    context.read<BluetoothModule>().sendBytes(Uint8List.fromList([5]), widget.id);
     setState(() {
       currentDir = Direction.none;
     });
@@ -70,16 +84,16 @@ class _TiltingDPadState extends State<TiltingDPad> {
   void sendDataBasedOnDirection(Direction dir){
     switch (dir){
       case Direction.up:
-        sendBytes(Uint8List.fromList([1]), context);
+        context.read<BluetoothModule>().sendBytes(Uint8List.fromList([1]), widget.id);
         break;
       case Direction.down:
-        sendBytes(Uint8List.fromList([2]),  context);
+        context.read<BluetoothModule>().sendBytes(Uint8List.fromList([2]), widget.id);
         break;
       case Direction.left:
-        sendBytes(Uint8List.fromList([3]),  context);
+        context.read<BluetoothModule>().sendBytes(Uint8List.fromList([3]), widget.id);
         break;
       case Direction.right:
-        sendBytes(Uint8List.fromList([4]), context);
+        context.read<BluetoothModule>().sendBytes(Uint8List.fromList([4]), widget.id);
         break;
       case Direction.none:
         

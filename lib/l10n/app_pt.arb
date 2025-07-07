@@ -1,0 +1,12 @@
+{
+    "@@locale": "pt",
+    "language": "Português",
+    "@language": {
+        "description": "Seleção de Língua"
+    },
+    "appBarText":"Controlo do Robô Formiga",
+    "connectionStatus": "Estado de Conexão",
+    "disconnectedStatus": "DESCONECTADO",
+    "connect": "Conectar", 
+    "disconnect": "Disconectar"
+}

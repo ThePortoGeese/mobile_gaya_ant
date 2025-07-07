@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_gaya_ant/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/views/smallwidgets/devicelistitem.dart';
+import 'package:mobile_gaya_ant/visuals/smallwidgets/devicelistitem.dart';
 import 'package:provider/provider.dart';
 
 class BluetoothMenu extends StatelessWidget {

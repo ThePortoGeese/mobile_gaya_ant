@@ -41,8 +41,9 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void handleBtStateChange() async{
-    if(!mounted) return;
-    switch (context.read<BluetoothModule>().btState){
+    BTState bts = context.read<BluetoothModule>().btState;
+  
+    switch (bts){
       case BTState.connected:
         setState(() {
           availableDevicesListIsVisible = false;
@@ -81,7 +82,7 @@ class _MenuPageState extends State<MenuPage> {
            Normalalert(titleText: "ERRO DE CONEXÃO", bodyText: "Houve um erro a conectar com o dispositivo",titleStyle: alertTitleStyle));
       case BTState.errorPermission1: case BTState.errorPermission2:
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-        Normalalert(titleText: "ERRO DE PERMISSÃO", bodyText: "Não aceitu as permissões. Vamos fechar agora",titleStyle: alertTitleStyle));
+        Normalalert(titleText: "ERRO DE PERMISSÃO", bodyText: "Não aceitou as permissões. Vamos fechar agora",titleStyle: alertTitleStyle));
         exit(0);
       case BTState.notAvailable:
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
@@ -209,7 +210,7 @@ class _MenuPageState extends State<MenuPage> {
 
     if(!mounted) return;
     showDialog(context: context, builder: (context) {
-      return  Normalalert(titleText: "DISCONECTADO",bodyText: "Disconectado do dispositivo ${context.read<BluetoothModule>().deviceInfo[context.read<BluetoothModule>().currentMacAdress]}",);
+      return  Normalalert(titleText: "DISCONECTADO",bodyText: "Disconectado do dispositivo",);
     },);
   }
 
