@@ -73,7 +73,7 @@ class _TiltingDPadState extends State<TiltingDPad> {
 
       Direction dir = retrieveDirection(offsetFromCenter);
     
-      debugPrint(dir.toString());
+      //debugPrint(dir.toString());
 
       setState(() {
         currentDir = dir;
@@ -141,7 +141,7 @@ class DPadPainter extends CustomPainter{
     canvas.drawOval(borderCircle, borderPaint);
 
     Paint ovalPaint = Paint();
-    ovalPaint.color = Color(0xffE87619);
+    ovalPaint.color = Color(0xffCE5200);
 
     {
       Rect rect = Rect.fromCenter(center: Offset(size.width, size.height), width: 150, height: 130) ;
@@ -166,34 +166,98 @@ class DPadPainter extends CustomPainter{
       canvas.drawOval(rect, ovalPaint);
       canvas.drawOval(rect, borderPaint);
     }
+      const textStyle = TextStyle(
+        color: Colors.black,
+        fontSize: 30,
+      );
+    {
+      const textSpan = TextSpan(
+        text: '↑',
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, Offset(size.width/2-10, size.height/2-20 - radius*0.8));
+    }
+    {
+      const textSpan = TextSpan(
+        text: '↓',
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, Offset(size.width/2-10, size.height/2-20 + radius*0.8));
+    }
+    {
+      const textSpan = TextSpan(
+        text: '↶',
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, Offset(size.width/2-12.5-radius*0.8, size.height/2-25));
+    }
+    {
+      const textSpan = TextSpan(
+        text: '↷',
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+      textPainter.paint(canvas, Offset(size.width/2-12.5+radius*0.8, size.height/2-25));
+    }
 
-      Offset center = Offset(size.width/2, size.height/2);
-      Paint sectorPaint = Paint();
-      sectorPaint.color = Color(0x00000000).withValues(alpha: 0.1);
-      Path sector = Path()..moveTo(center.dx,center.dy);
+    Offset center = Offset(size.width/2, size.height/2);
+    Paint sectorPaint = Paint();
+    sectorPaint.color = Color(0xffF4B400).withValues(alpha: 0.3);
+    Path sector = Path()..moveTo(center.dx,center.dy);
 
-      switch (dir){
-        case Direction.up:
-          sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
-          sector.addArc( canvasClipCircle, 7 * pi / 4, - pi/2);
-          sector.lineTo(center.dx, center.dy);
-        case Direction.right:
-          sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
-          sector.addArc( canvasClipCircle, 7 * pi / 4, pi/2);
-          sector.lineTo(center.dx, center.dy);
-        case Direction.down:
-          sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
-          sector.addArc( canvasClipCircle, pi / 4, pi/2);
-          sector.lineTo(center.dx, center.dy);
-        case Direction.left:
-          sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
-          sector.addArc( canvasClipCircle, 5 * pi / 4, - pi/2);
-          sector.lineTo(center.dx, center.dy);
-        default:
-          sector.addArc(Rect.fromCenter(center: center, width: sensitivity*2, height: sensitivity*2), 0, 2*pi);
-      }
+    switch (dir){
+      case Direction.up:
+        sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
+        sector.addArc( canvasClipCircle, 7 * pi / 4, - pi/2);
+        sector.lineTo(center.dx, center.dy);
+      case Direction.right:
+        sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
+        sector.addArc( canvasClipCircle, 7 * pi / 4, pi/2);
+        sector.lineTo(center.dx, center.dy);
+      case Direction.down:
+        sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
+        sector.addArc( canvasClipCircle, pi / 4, pi/2);
+        sector.lineTo(center.dx, center.dy);
+      case Direction.left:
+        sector.lineTo(center.dx+sqrt(radius), center.dy+sqrt(radius));
+        sector.addArc( canvasClipCircle, 5 * pi / 4, - pi/2);
+        sector.lineTo(center.dx, center.dy);
+      default:
+        sector.addArc(Rect.fromCenter(center: center, width: sensitivity*2, height: sensitivity*2), 0, 2*pi);
+    }
 
-      canvas.drawPath(sector, sectorPaint);
+    canvas.drawPath(sector, sectorPaint);
   }
 
   @override

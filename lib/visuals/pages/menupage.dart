@@ -66,6 +66,8 @@ class _MenuPageState extends State<MenuPage> {
           ],
         ),);
       case BTState.errorBonding:
+        if(!mounted) return;
+        Navigator.of(context).pop();
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
           Normalalert(titleText: AppLocalizations.of(context)!.bondingError, bodyText: AppLocalizations.of(context)!.bondingErrorMessage,titleStyle: alertTitleStyle));
       case BTState.errorConnection:
@@ -218,7 +220,7 @@ class _MenuPageState extends State<MenuPage> {
     await context.read<BluetoothModule>().connectToDevice(mac);
 
     if(!mounted) return;
-    if( context.read<BluetoothModule>().btState != BTState.errorConnection){
+    if( context.read<BluetoothModule>().btState != BTState.errorConnection || context.read<BluetoothModule>().btState != BTState.errorBonding){
       Navigator.of(context).pop();
       }
     }

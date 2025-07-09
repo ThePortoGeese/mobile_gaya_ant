@@ -8,8 +8,8 @@ class BottomSheetGAYA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container (
-      height: 100,
-      padding: EdgeInsetsGeometry.all(20),
+      height: 50,
+      padding: EdgeInsetsGeometry.all(10),
       decoration: BoxDecoration(color:  Color(0xffFB923C), boxShadow:  [BoxShadow(color: Colors.black, blurRadius: 3.0, spreadRadius: 0.5)]),
       child: Center(
         child: Image.asset('assets/ispgayalogo.png'),

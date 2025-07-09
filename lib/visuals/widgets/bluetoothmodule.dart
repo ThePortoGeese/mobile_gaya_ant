@@ -15,6 +15,7 @@ class BluetoothModule with ChangeNotifier{
   Map<String, String> deviceInfo = {};
   String? currentMacAdress = "";
   String lastSender = "";
+  int lastAction = 0;
 
   Future<void> initializeBluetooth() async{
     FlutterBluetoothSerial.instance.onStateChanged().listen((newState){
@@ -134,6 +135,7 @@ class BluetoothModule with ChangeNotifier{
 
       bluetoothConnection?.output.add(i);
       await bluetoothConnection?.output.allSent;
+      lastAction = i[0].toInt();
       debugPrint("Sent ${i.toString()}");
       notifyListeners();
       return;

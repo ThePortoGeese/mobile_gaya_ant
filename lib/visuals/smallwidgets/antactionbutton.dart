@@ -14,10 +14,12 @@ class AntActionButton extends StatefulWidget {
   const AntActionButton({
     super.key,
     required this.text,
-    required this.byte
+    required this.byte,
+    required this.btnColor
   });
   final List<String> text;
   final List<Uint8List> byte;
+  final Color btnColor;
 
   @override
   State<AntActionButton> createState() => _AntActionButtonState();
@@ -38,28 +40,44 @@ class _AntActionButtonState extends State<AntActionButton> {
           functionNumber = 0;
         }
 
-        return ElevatedButton(
-          style: ButtonStyle(
-            minimumSize: WidgetStatePropertyAll<Size>(Size(double.infinity, 50)),
-            backgroundColor: WidgetStateProperty.all<Color>((functionNumber == 0) ? Color(0xffFFAA69) : Color(0xffE87619)), 
-            foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                 
-                borderRadius: BorderRadius.circular(40.0),
-                side: BorderSide(color: Colors.black, strokeAlign: (functionNumber == 0) ? 0 : 6),
-                
-              ))),
-          
-          onPressed: () {
-            setState(() {
-              if(++functionNumber == widget.byte.length){
-              functionNumber=0;
-            }
-            });
-            context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text[0]);
-          } , child: Text((functionNumber > widget.text.length-1) ? AppLocalizations.of(context)!.stop : widget.text[functionNumber], style: TextStyle(fontSize: 18))
+        return Expanded(
+          child: SizedBox(
+            height: 50,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>((functionNumber == 0) ? widget.btnColor : transformPressedEffect(widget.btnColor)), 
+                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                     
+                    borderRadius: BorderRadius.circular(40.0),
+                    side: BorderSide(color: Colors.black, strokeAlign: (functionNumber == 0) ? 0 : 6),
+                    
+                  ))),
+              
+              onPressed: () {
+                setState(() {
+                  if(++functionNumber == widget.byte.length){
+                  functionNumber=0;
+                }
+                });
+                context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text[0]);
+              } , child: Text((functionNumber > widget.text.length-1) ? AppLocalizations.of(context)!.stop : widget.text[functionNumber], style: TextStyle(fontSize: 18))
+            ),
+          ),
         );
       }
     );}   
+
+  Color transformPressedEffect(Color baseColor) {
+    final hsl = HSLColor.fromColor(baseColor);
+    
+    final modified = hsl.withSaturation(
+      (hsl.saturation * 1.25).clamp(0.0, 1.0),
+    ).withLightness(
+      (hsl.lightness * 0.85).clamp(0.0, 1.0),
+    );
+
+    return modified.toColor();
+  }
 }

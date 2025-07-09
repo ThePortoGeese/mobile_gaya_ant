@@ -25,13 +25,6 @@ class _DeviceListState extends State<DeviceList> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _animation.addStatusListener((status) {
-      if(status == AnimationStatus.dismissed){
-        setState(() {
-          listVisible = false;
-        });
-      }
-    });
   }
 
 
@@ -56,6 +49,9 @@ class _DeviceListState extends State<DeviceList> with SingleTickerProviderStateM
       AnimatedSize(
         curve: Curves.fastOutSlowIn,
         duration: Duration(milliseconds: 500),
+        onEnd: () {
+          if(!widget.isListSupposedToBeVisible){listVisible = false;}
+        },
         child: SizedBox(
           width: double.infinity,
           height: (widget.isListSupposedToBeVisible) ? 300 : 0,

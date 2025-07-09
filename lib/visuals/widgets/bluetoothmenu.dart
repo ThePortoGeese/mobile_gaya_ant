@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
 import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/visuals/widgets/devicelist.dart';
+import 'package:mobile_gaya_ant/visuals/smallwidgets/devicelist.dart';
 import 'package:provider/provider.dart';
 
 class BluetoothMenu extends StatelessWidget {
@@ -22,9 +22,10 @@ class BluetoothMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Color(0xffB6DFFF),
         borderRadius: BorderRadius.all(Radius.circular(20)),
+        border: BoxBorder.all(color: Colors.black, width: 1)
         //boxShadow: [BoxShadow(color: Colors.blueGrey, blurRadius: 5.0, spreadRadius: 1.0)]
       ),
       margin: const EdgeInsets.all(10),

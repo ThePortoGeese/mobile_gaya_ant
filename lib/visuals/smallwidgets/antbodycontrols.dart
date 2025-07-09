@@ -59,7 +59,6 @@ class _AntBodyControlsState extends State<AntBodyControls> with TickerProviderSt
       builder: (context, btm, child) {
         if(btm.bluetoothConnection != null){
           if(btm.lastSender != widget.id){
-            debugPrint("Reset Tail State");
             headActive = false;
             tailActive = false;
           }
@@ -140,16 +139,16 @@ class AntHeadTailPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final headPaint = Paint()
     ..colorFilter = ColorFilter.mode(
-      headActive ? Color(0xffFF7919)    // or whatever colour you need
-                    : Color.lerp( Color(0xffFF7919)  , Color(0xffFF9A47), intensity.value)!,    // “no tint” = white
-      BlendMode.srcIn,                 // keeps the image’s alpha, replaces colour
+      headActive ? Color(0xffFF7919)   
+                    : Color.lerp( Colors.brown, Color(0xffFF9A47), intensity.value)!,   
+      BlendMode.srcIn,              
     );
 
     final tailPaint = Paint()
     ..colorFilter = ColorFilter.mode(
-      tailActive ? Color(0xffFF7919)    // or whatever colour you need
-                    : Color.lerp( Color(0xffFF7919)  , Color(0xffFF9A47), intensity.value)!,      // “no tint” = white
-      BlendMode.srcIn,                 // keeps the image’s alpha, replaces colour
+      tailActive ? Color(0xffFF7919)   
+                    : Color.lerp( Colors.brown  , Color(0xffFF9A47), intensity.value)!,    
+      BlendMode.srcIn,              
     );
     
     canvas.drawImage(antHead,Offset(size.width/2.7-81, 0), headPaint);

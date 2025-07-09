@@ -75,14 +75,20 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                       children: [
                         Container(
                           decoration: BoxDecoration(shape: BoxShape.circle),
-                          child: FloatingActionButton(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30), side: BorderSide(width: 1)),
-                            backgroundColor: const Color(0xffDB3B3E),
-                            foregroundColor: Colors.white,
-                            
-                            child: Icon(Icons.stop) , onPressed: (){
-                              btm.sendBytes(Uint8List.fromList([5]), "StopBtn");
-                            } 
+                          child: Consumer<BluetoothModule>(
+                            builder: (context, btm, child) => 
+                            Visibility(
+                              visible: btm.lastAction != 5,
+                              child: FloatingActionButton(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30), side: BorderSide(width: 1)),
+                                backgroundColor: const Color(0xffDB3B3E),
+                                foregroundColor: Colors.white,
+                                
+                                child: Icon(Icons.stop) , onPressed: (){
+                                  btm.sendBytes(Uint8List.fromList([5]), "StopBtn");
+                                } 
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -100,7 +106,7 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                           _antVelocity = value;
                         });
                       },
-                      activeColor: Color.lerp(Colors.lightBlueAccent, Colors.deepOrange, (_antVelocity-100)/100 )
+                      activeColor: Color.lerp(Colors.green, Colors.red  , (_antVelocity-100)/100 )
                       );
                     }
                   ),
@@ -108,10 +114,17 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                     spacing: 20,
 
                     children: <Widget>[
-                        AntActionButton(text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])]),
+                        AntActionButton(btnColor:  Color(0xffFFAA69),text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])]),
                         TiltingDPad(),
-                        AntActionButton(text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])]),
-                        AntActionButton(text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])]),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AntActionButton(btnColor:Color(0xffD9534F),text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])]),
+                            AntActionButton(btnColor:Color(0xffF4B400), text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])]),
+                        
+                          ],
+                        )
+                            
                     ],
                   ),
             
