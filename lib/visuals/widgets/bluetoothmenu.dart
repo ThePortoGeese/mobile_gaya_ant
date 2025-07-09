@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/visuals/smallwidgets/devicelistitem.dart';
+import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
+import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/visuals/widgets/devicelist.dart';
 import 'package:provider/provider.dart';
 
 class BluetoothMenu extends StatelessWidget {
   const BluetoothMenu({
     super.key,
-    required this.status,
-    required this.buttonText,
     required this.isListVisible,
     required this.onConnectPressed,
     required this.onDeviceTap,
@@ -16,8 +15,6 @@ class BluetoothMenu extends StatelessWidget {
   });
 
   final bool bluetoothButtonEnabled;
-  final String status;
-  final String buttonText;
   final bool isListVisible;
   final VoidCallback onConnectPressed;
   final VoidCallback onDisconnectPressed;
@@ -27,21 +24,23 @@ class BluetoothMenu extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xffB6DFFF),
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        //boxShadow: [BoxShadow(color: Colors.blueGrey, blurRadius: 5.0, spreadRadius: 1.0)]
       ),
-      margin: const EdgeInsets.all(30),
+      margin: const EdgeInsets.all(10),
       width: double.infinity,
       padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 10),
-          Text("Estado de Conexão", style: TextStyle(fontSize: 24)),
+          Text(AppLocalizations.of(context)!.connectionStatus, style: TextStyle(fontSize: 24)),
           SizedBox(height: 10),
-          Text(status, textAlign: TextAlign.center,
+          Text((context.read<BluetoothModule>().bluetoothConnection?.isConnected ?? false) ? "${AppLocalizations.of(context)!.connectedToDevice} ${context.read<BluetoothModule>().deviceInfo[context.read<BluetoothModule>().currentMacAdress]}"   :  AppLocalizations.of(context)!.disconnectedStatus, 
+              textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color:(status == 'DESCONECTADO' ?  const Color(0xffDB3B3E) : const Color(0xff194B97)),
+                  color:((context.read<BluetoothModule>().bluetoothConnection?.isConnected ?? false) ?  Color(0xff194B97) :  Color(0xffDB3B3E)),
                   fontSize: 24)),
           const SizedBox(height: 10),
           ElevatedButton(
@@ -54,29 +53,12 @@ class BluetoothMenu extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5)),
             ),
             onPressed:(bluetoothButtonEnabled ? ((context.read<BluetoothModule>().bluetoothConnection?.isConnected??false)? onDisconnectPressed : onConnectPressed) : null),
-            child: Text(buttonText),
+            child: Text((isListVisible ? "↓" : ((context.read<BluetoothModule>().bluetoothConnection?.isConnected ?? false) ? AppLocalizations.of(context)!.disconnect : AppLocalizations.of(context)!.connect)))
           ),
-          Visibility(
-            visible: isListVisible,
-            child: Container(
-              height: 300,
-              decoration: BoxDecoration(
-                color: const Color(0xff6DA3F4).withValues(alpha: 0.7),
-                border: Border.all(width: 1),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              padding: const EdgeInsets.all(10),
-              child: ListView.builder(
-                itemCount: context.read<BluetoothModule>().deviceInfo.length,
-                itemBuilder: (context, index) {
-                  final mac   = context.read<BluetoothModule>().deviceInfo.keys.elementAt(index);
-                  return DeviceListItem(value: context.read<BluetoothModule>().deviceInfo[mac]!, onDeviceTap: () => onDeviceTap(mac));
-                } 
-                ),
-              ),
-            ),
+          DeviceList(isListSupposedToBeVisible: isListVisible, onDeviceTap: onDeviceTap),
         ],
       ),
     );
   }
 }
+

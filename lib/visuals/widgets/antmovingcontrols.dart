@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_gaya_ant/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
+import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/antactionbutton.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/antbodycontrols.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/tiltingdpad.dart';
@@ -15,67 +16,110 @@ class AntMovingControls extends StatefulWidget {
   State<AntMovingControls> createState() => _AntMovingControlsState();
 }
 
-class _AntMovingControlsState extends State<AntMovingControls> {
-  double antVelocity = 100;
+class _AntMovingControlsState extends State<AntMovingControls> with SingleTickerProviderStateMixin {
+  double _antVelocity = 100;
+  late final AnimationController _animationController = AnimationController(vsync: this, 
+      duration: Duration(milliseconds: 1000)
+    );
+  late final Animation<double> _animation = CurvedAnimation(parent: _animationController, curve: Curves.fastOutSlowIn);
+  late bool _wasConnected = false;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final btm = context.watch<BluetoothModule>();
+    final connected = btm.bluetoothConnection?.isConnected ?? false;
+
+
+    if (connected != _wasConnected) {
+      connected ? _animationController.forward(from: 0) : _animationController.reverse();
+      _wasConnected = connected;
+    }
+  }
+
+  animateForward(){
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(listenable: context.read<BluetoothModule>(), builder: (context, child) => Visibility(visible: (context.read<BluetoothModule>().bluetoothConnection?.isConnected??false),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 30, right: 30),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-          
-            Stack(children:[
-              AntBodyControls() ,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
+    return Consumer<BluetoothModule>(builder: (context, btm,child) => Visibility(visible: btm.bluetoothConnection?.isConnected??false,
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context , child) {
+          return Transform(
+            transform: Matrix4.translationValues(0, (1 - _animation.value) * 1000, 0),
+            child: Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white, boxShadow: [BoxShadow(color: Colors.blueGrey, blurRadius: 5.0, spreadRadius: 1.0)]),
+              padding: const EdgeInsets.all(30),
+              margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              child: Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(shape: BoxShape.circle),
-                    child: FloatingActionButton(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30), side: BorderSide(width: 1)),
-                      backgroundColor: const Color(0xffDB3B3E),
-                      foregroundColor: Colors.white,
-                      
-                      child: Icon(Icons.stop) , onPressed: (){
-                        context.read<BluetoothModule>().sendBytes(Uint8List.fromList([5]), "StopBtn");
-                      } 
-                    ),
+                  SizedBox(height: 10),
+                  Stack(children:[
+                    AntBodyControls() ,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(shape: BoxShape.circle),
+                          child: FloatingActionButton(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30), side: BorderSide(width: 1)),
+                            backgroundColor: const Color(0xffDB3B3E),
+                            foregroundColor: Colors.white,
+                            
+                            child: Icon(Icons.stop) , onPressed: (){
+                              btm.sendBytes(Uint8List.fromList([5]), "StopBtn");
+                            } 
+                          ),
+                        ),
+                      ],
+                    ),]),
+                  SizedBox(height: 10,),
+                  Text(AppLocalizations.of(context)!.velocity, style: TextStyle(fontSize: 10 + _antVelocity*0.05),),
+                  Consumer<BluetoothModule>(
+                    builder: (context, btm, child) {
+                      if(btm.bluetoothConnection == null) {
+                        _antVelocity = 120;
+                      }
+                      return Slider(value: _antVelocity,min: 100,max: 190, onChanged: (value) {
+                        btm.sendBytes(Uint8List.fromList([value.toInt()]), "VelocityMeter");
+                        setState(() {
+                          _antVelocity = value;
+                        });
+                      },
+                      activeColor: Color.lerp(Colors.lightBlueAccent, Colors.deepOrange, (_antVelocity-100)/100 )
+                      );
+                    }
                   ),
-                ],
-              ),]),
-            SizedBox(height: 10,),
-            Text("VELOCIDADE"),
-            Consumer<BluetoothModule>(
-              builder: (context, btm, child) {
-                if(btm.bluetoothConnection == null) {
-                  antVelocity = 120;
-                }
-                return Slider(value: antVelocity,min: 100,max: 190, onChanged: (value) {
-                  context.read<BluetoothModule>().sendBytes(Uint8List.fromList([value.toInt()]), "VelocityMeter");
-                  setState(() {
-                    antVelocity = value;
-                  });
-                },);
-              }
-            ),
-            Column(
-              spacing: 20,
-              // TODO: ADD MORE BUTTONS
-              children: <Widget>[
-                  // TODO: ADD SEND BYTES TO THESE FUNCTIONS, THEY ONLY HAVE NEUTRAL STATE
-                  AntActionButton(text: "Agarrar", byte: [Uint8List.fromList([5]),Uint8List.fromList([8]),Uint8List.fromList([9])]),
-                  TiltingDPad(),
-                  AntActionButton(text: "Atacar", byte: [Uint8List.fromList([5]),Uint8List.fromList([10])]),
-                  AntActionButton(text: "Dançar", byte: [Uint8List.fromList([5])]),
-              ],
-            ),
+                  Column(
+                    spacing: 20,
 
-          ],
-        ),
+                    children: <Widget>[
+                        AntActionButton(text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])]),
+                        TiltingDPad(),
+                        AntActionButton(text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])]),
+                        AntActionButton(text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])]),
+                    ],
+                  ),
+            
+                ],
+              ),
+            ),
+          );
+        }
       )
     ));
   }

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../bluetoothmodule.dart';
+import '../widgets/bluetoothmodule.dart';
 
 
 enum Direction {up, right, down, left, none}

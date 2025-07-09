@@ -97,6 +97,174 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('pt'),
   ];
+
+  /// Language Selection
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get language;
+
+  /// No description provided for @appLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'App Language'**
+  String get appLanguage;
+
+  /// No description provided for @appBarText.
+  ///
+  /// In en, this message translates to:
+  /// **'Robot Ant Control'**
+  String get appBarText;
+
+  /// No description provided for @connectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Status'**
+  String get connectionStatus;
+
+  /// No description provided for @disconnectedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'DISCONNECTED'**
+  String get disconnectedStatus;
+
+  /// No description provided for @connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get connect;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Desconnect'**
+  String get disconnect;
+
+  /// No description provided for @connectedToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to Device '**
+  String get connectedToDevice;
+
+  /// No description provided for @bluetoothError.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth Error'**
+  String get bluetoothError;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @bondingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonding Error'**
+  String get bondingError;
+
+  /// No description provided for @bondingErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while bonding to the device.'**
+  String get bondingErrorMessage;
+
+  /// No description provided for @bluetoothOffMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Seems your bluetooth is turned off. Do you wish to turn it on?'**
+  String get bluetoothOffMessage;
+
+  /// No description provided for @bluetoothNotAvailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device doesn\'t support bluetooth technology. We will close the application now.'**
+  String get bluetoothNotAvailableMessage;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get connectionError;
+
+  /// No description provided for @connectionErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while connecting to the device.'**
+  String get connectionErrorMessage;
+
+  /// No description provided for @searchingDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching for devices...'**
+  String get searchingDevices;
+
+  /// No description provided for @connectingToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to device '**
+  String get connectingToDevice;
+
+  /// No description provided for @grab.
+  ///
+  /// In en, this message translates to:
+  /// **'Grab'**
+  String get grab;
+
+  /// No description provided for @attack.
+  ///
+  /// In en, this message translates to:
+  /// **'Attack'**
+  String get attack;
+
+  /// No description provided for @dance.
+  ///
+  /// In en, this message translates to:
+  /// **'Dance'**
+  String get dance;
+
+  /// No description provided for @velocity.
+  ///
+  /// In en, this message translates to:
+  /// **'Velocity'**
+  String get velocity;
+
+  /// No description provided for @disconnectedFromDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected from device'**
+  String get disconnectedFromDevice;
+
+  /// No description provided for @permissionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Error'**
+  String get permissionsError;
+
+  /// No description provided for @permissionsErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You must accept permissions for the app to run. We will close the app now'**
+  String get permissionsErrorMessage;
+
+  /// No description provided for @release.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get release;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
 }
 
 class _AppLocalizationsDelegate

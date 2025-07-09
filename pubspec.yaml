@@ -33,6 +33,10 @@ dependencies:
   flutter_bluetooth_serial: ^0.4.0
   permission_handler: ^12.0.0+1
 
+  animated_splash_screen: ^1.3.0
+  page_transition: ^2.2.1
+
+
   flutter_localizations:
     sdk: flutter
   intl: any
@@ -68,6 +72,7 @@ flutter:
     - assets/formigasempartes.png
     - assets/anthead.png
     - assets/anttail.png
+    - assets/splashScreenLogo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -4,8 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide Size;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:mobile_gaya_ant/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/data/values.dart';
+import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
+import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/models/generalvalues.dart';
 import 'package:mobile_gaya_ant/visuals/dialogs/normalalert.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,7 @@ class AntActionButton extends StatefulWidget {
     required this.text,
     required this.byte
   });
-  final String text;
+  final List<String> text;
   final List<Uint8List> byte;
 
   @override
@@ -30,7 +31,7 @@ class _AntActionButtonState extends State<AntActionButton> {
     return Consumer<BluetoothModule>(
       builder: (context, btm, child) {
         if(btm.bluetoothConnection != null){
-          if(btm.lastSender != widget.text){
+          if(btm.lastSender != widget.text[0]){
             functionNumber = 0;
           }
         } else {
@@ -40,13 +41,13 @@ class _AntActionButtonState extends State<AntActionButton> {
         return ElevatedButton(
           style: ButtonStyle(
             minimumSize: WidgetStatePropertyAll<Size>(Size(double.infinity, 50)),
-            backgroundColor: WidgetStateProperty.all<Color>(Color(0xffFFAA69)), 
+            backgroundColor: WidgetStateProperty.all<Color>((functionNumber == 0) ? Color(0xffFFAA69) : Color(0xffE87619)), 
             foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
             shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                  
                 borderRadius: BorderRadius.circular(40.0),
-                side: BorderSide(color: Colors.black),
+                side: BorderSide(color: Colors.black, strokeAlign: (functionNumber == 0) ? 0 : 6),
                 
               ))),
           
@@ -56,8 +57,8 @@ class _AntActionButtonState extends State<AntActionButton> {
               functionNumber=0;
             }
             });
-            context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text);
-          } , child: Text(widget.text, style: TextStyle(fontSize: 18))
+            context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text[0]);
+          } , child: Text((functionNumber > widget.text.length-1) ? AppLocalizations.of(context)!.stop : widget.text[functionNumber], style: TextStyle(fontSize: 18))
         );
       }
     );}   

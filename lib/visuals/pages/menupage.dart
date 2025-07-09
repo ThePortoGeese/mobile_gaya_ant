@@ -1,36 +1,27 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
+import 'package:mobile_gaya_ant/models/localenotifer.dart';
+import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
 import 'package:provider/provider.dart';
 import '../widgets/bluetoothmenu.dart';
 import '../dialogs/circularloading.dart';
 import '../dialogs/normalalert.dart';
 import '../smallwidgets/bottomsheet.dart';
 import '../widgets/antmovingcontrols.dart';
-import '../../data/values.dart';
-
-enum LanguageItem { pt, eng }
+import '../../models/generalvalues.dart';
 
 class MenuPage extends StatefulWidget {
-  const MenuPage({super.key, required this.title});
-  final String title;
+  const MenuPage({super.key});
 
   @override
   State<MenuPage> createState() => _MenuPageState();
 }
 
 class _MenuPageState extends State<MenuPage> {
-
-  //THIS JUST HOLDS THE SELECTED ITEM OF THE LANGUAGE POP UP MENU BUTTON
-  LanguageItem? selectedItem = LanguageItem.pt;
   //THIS IS THE ICON OF THE LANGUAGE BUTTON
   Widget? currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
-  //THIS MAP HOLDS THE MAC ADDRESS OF THE DEVICE AS ITS KEY AND THE NAME AS ITS VALUE
-
-  //THESE ARE VARIABLES WITH THE VALUES FOR BUTTONS AND LABELS
-  String status = "DESCONECTADO";
-  String bluetoothButtonText = "Conectar";
 
   @override
   void initState(){
@@ -40,6 +31,11 @@ class _MenuPageState extends State<MenuPage> {
     context.read<BluetoothModule>().initializeBluetooth();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void handleBtStateChange() async{
     BTState bts = context.read<BluetoothModule>().btState;
   
@@ -47,46 +43,44 @@ class _MenuPageState extends State<MenuPage> {
       case BTState.connected:
         setState(() {
           availableDevicesListIsVisible = false;
-          bluetoothButtonText = "Desconectar";
-          status = "CONECTADO A ${context.read<BluetoothModule>().deviceInfo[context.read<BluetoothModule>().currentMacAdress]}";
         }); 
       case BTState.disconnected:
-        context.read<BluetoothModule>().bluetoothConnection = null;
         setState(() {
           bluetoothButtonEnabled = true;
-          bluetoothButtonText = "Conectar";
-          status = "DESCONECTADO";
         });
       case BTState.off:
         setState(() {
           bluetoothButtonEnabled = false;
         });
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => AlertDialog(
-          title: Text("ERRO BLUETOOTH",  style: alertTitleStyle),
-          content: Text("Parece que o seu bluetooth está desligado, pretende ligá-lo?"),
+          title: Text(AppLocalizations.of(context)!.bluetoothError,  style: alertTitleStyle),
+          content: Text(AppLocalizations.of(context)!.bluetoothOffMessage),
           actions: [
             TextButton(onPressed: (){
               context.read<BluetoothModule>().requestEnableBluetooth();
               Navigator.of(context).pop();
-            }, child: Text("Sim")),
+            }, child: Text(AppLocalizations.of(context)!.yes)),
             TextButton(onPressed: (){
               Navigator.of(context).pop();
-            }, child: Text("Não")),
+            }, child: Text(AppLocalizations.of(context)!.no)),
           ],
         ),);
       case BTState.errorBonding:
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-          Normalalert(titleText: "ERRO DE EMPARELHAMENTO", bodyText: "Houve um erro a emparelhar o dispositivo",titleStyle: alertTitleStyle));
+          Normalalert(titleText: AppLocalizations.of(context)!.bondingError, bodyText: AppLocalizations.of(context)!.bondingErrorMessage,titleStyle: alertTitleStyle));
       case BTState.errorConnection:
+          if(!mounted) return;
+          Navigator.of(context).pop();
+          debugPrint("Came");
           await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-           Normalalert(titleText: "ERRO DE CONEXÃO", bodyText: "Houve um erro a conectar com o dispositivo",titleStyle: alertTitleStyle));
+           Normalalert(titleText: AppLocalizations.of(context)!.connectionError, bodyText: AppLocalizations.of(context)!.connectionErrorMessage,titleStyle: alertTitleStyle));
       case BTState.errorPermission1: case BTState.errorPermission2:
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-        Normalalert(titleText: "ERRO DE PERMISSÃO", bodyText: "Não aceitou as permissões. Vamos fechar agora",titleStyle: alertTitleStyle));
+        Normalalert(titleText: AppLocalizations.of(context)!.permissionsError, bodyText: AppLocalizations.of(context)!.permissionsErrorMessage,titleStyle: alertTitleStyle));
         exit(0);
       case BTState.notAvailable:
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-        Normalalert(titleText: "NÃO SUPORTA BLUETOOTH", bodyText: "O seu dispositivo não têm tecnologia bluetooth. Vamos fechar agora",titleStyle: alertTitleStyle));
+        Normalalert(titleText: AppLocalizations.of(context)!.bluetoothError, bodyText: AppLocalizations.of(context)!.bluetoothNotAvailableMessage,titleStyle: alertTitleStyle));
         exit(0);
       case BTState.loadingDevices:
         break;
@@ -102,29 +96,36 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    String? selectedItem = context.watch<LocaleNotifer>().locale.toString();
+    if(selectedItem.contains("en")){
+      currentIcon = Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain);
+      selectedItem = "en";
+    }
+
     return Scaffold(
       appBar: AppBar(
+        shadowColor: Color(0xff000000),
         backgroundColor: Color(0xffFB923C),
-
-        title: Text(widget.title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+        title: Text(AppLocalizations.of(context)!.appBarText, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
         actions: <Widget>[
-          PopupMenuButton<LanguageItem>(
+          PopupMenuButton<String>(
             icon: currentIcon,
             initialValue: selectedItem,
-            tooltip: "Linguagem Da Aplicação",
-            onSelected: (LanguageItem value) {
+            tooltip: AppLocalizations.of(context)!.appLanguage,
+            onSelected: (String value) {
               setState(() {
                 selectedItem = value;
-                if(value == LanguageItem.eng){
+                if(value == "en"){
                   currentIcon = Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain);
                 } else {
                   currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
                 }
+                context.read<LocaleNotifer>().setLocale(Locale(selectedItem!));
               });
             },  
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<LanguageItem>>[
-              PopupMenuItem<LanguageItem>(
-                value: LanguageItem.pt,
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'pt',
                 child: Row(
                   children: <Widget>[
                     Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain),
@@ -133,7 +134,7 @@ class _MenuPageState extends State<MenuPage> {
                     
                   ]
                 ),),
-              PopupMenuItem<LanguageItem>(value: LanguageItem.eng, 
+              PopupMenuItem<String>(value: 'en', 
                 child: Row(
                   children: <Widget>[
                     Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain),
@@ -153,17 +154,17 @@ class _MenuPageState extends State<MenuPage> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                    padding: EdgeInsets.only(bottom: 20),
                     child: Column(
                       children: <Widget>[
-                        BluetoothMenu(
-                          bluetoothButtonEnabled: bluetoothButtonEnabled,
-                          status: status,
-                          buttonText: bluetoothButtonText,
-                          isListVisible: availableDevicesListIsVisible,
-                          onConnectPressed: handleConnectButtonPressed,
-                          onDeviceTap: handleDeviceTap,
-                          onDisconnectPressed: handleDisconnectButtonPressed,
+                        Padding(
+                          padding: const EdgeInsets.all(0),
+                          child: BluetoothMenu(
+                            bluetoothButtonEnabled: bluetoothButtonEnabled,
+                            isListVisible: availableDevicesListIsVisible,
+                            onConnectPressed: handleConnectButtonPressed,
+                            onDeviceTap: handleDeviceTap,
+                            onDisconnectPressed: handleDisconnectButtonPressed,
+                          ),
                         ),
                         AntMovingControls()
                       ],
@@ -186,15 +187,10 @@ class _MenuPageState extends State<MenuPage> {
   void handleConnectButtonPressed() async {
     setState(() {
       availableDevicesListIsVisible = !availableDevicesListIsVisible;
-      if (availableDevicesListIsVisible) {
-        bluetoothButtonText = "↓";
-      } else {
-        bluetoothButtonText = "Conectar";
-      }
     });
     if(availableDevicesListIsVisible){
       showDialog(context: context, barrierDismissible: false, builder: (context) {
-        return CircularLoading(loadingText: "A procurar dispositivos");
+        return CircularLoading(loadingText: AppLocalizations.of(context)!.searchingDevices);
       },);  
       context.read<BluetoothModule>().deviceSearch();
     }
@@ -210,19 +206,21 @@ class _MenuPageState extends State<MenuPage> {
 
     if(!mounted) return;
     showDialog(context: context, builder: (context) {
-      return  Normalalert(titleText: "DISCONECTADO",bodyText: "Disconectado do dispositivo",);
+      return  Normalalert(titleText: AppLocalizations.of(context)!.disconnectedStatus,bodyText: AppLocalizations.of(context)!.disconnectedFromDevice,);
     },);
   }
 
   void handleDeviceTap(String mac) async {
     showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
-      return CircularLoading(loadingText: "A conectar ao dispositivo ${context.read<BluetoothModule>().deviceInfo[mac]}");
+      return CircularLoading(loadingText: "${AppLocalizations.of(context)!.connectingToDevice} ${context.read<BluetoothModule>().deviceInfo[mac]}");
     },);
     
     await context.read<BluetoothModule>().connectToDevice(mac);
 
     if(!mounted) return;
-    Navigator.of(context).pop();
+    if( context.read<BluetoothModule>().btState != BTState.errorConnection){
+      Navigator.of(context).pop();
+      }
     }
   }
 

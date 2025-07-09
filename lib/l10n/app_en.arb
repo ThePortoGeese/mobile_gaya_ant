@@ -1,12 +1,34 @@
 {
-    "@@locale": "pt",
-    "language": "Português",
+    "@@locale": "en",
+    "language": "English",
     "@language": {
-        "description": "Seleção de Língua"
+        "description": "Language Selection"
     },
+    "appLanguage": "App Language",
     "appBarText":"Robot Ant Control",
-    "connectionStatus": "Estado de Conexão",
-    "disconnectedStatus": "DESCONECTADO",
-    "connect": "Conectar", 
-    "disconnect": "Disconectar"
+    "connectionStatus": "Connection Status",
+    "disconnectedStatus": "DISCONNECTED",
+    "connect": "Connect", 
+    "disconnect": "Desconnect",
+    "connectedToDevice": "Connected to Device ",
+    "bluetoothError": "Bluetooth Error",
+    "yes":"Yes",
+    "no": "No",
+    "bondingError": "Bonding Error",
+    "bondingErrorMessage": "An error occurred while bonding to the device.",
+    "bluetoothOffMessage": "Seems your bluetooth is turned off. Do you wish to turn it on?",
+    "bluetoothNotAvailableMessage": "Your device doesn't support bluetooth technology. We will close the application now.",
+    "connectionError":"Connection Error",
+    "connectionErrorMessage": "An error occurred while connecting to the device.",
+    "searchingDevices": "Searching for devices...",
+    "connectingToDevice": "Connecting to device ",
+    "grab": "Grab",
+    "attack": "Attack",
+    "dance": "Dance",
+    "velocity": "Velocity",
+    "disconnectedFromDevice": "Disconnected from device",
+    "permissionsError":"Permission Error",
+    "permissionsErrorMessage": "You must accept permissions for the app to run. We will close the app now",
+    "release": "Release",
+    "stop": "Stop"
 }

@@ -4,9 +4,31 @@
     "@language": {
         "description": "Seleção de Língua"
     },
+    "appLanguage": "Linguagem da Aplicação",
     "appBarText":"Controlo do Robô Formiga",
     "connectionStatus": "Estado de Conexão",
     "disconnectedStatus": "DESCONECTADO",
     "connect": "Conectar", 
-    "disconnect": "Disconectar"
+    "disconnect": "Desconectar",
+    "connectedToDevice": "Conectado ao dispositivo ",
+    "bluetoothError": "Erro Bluetooth",
+    "yes":"Sim",
+    "no": "Não",
+    "bondingError": "Erro de Emparelhamento",
+    "bondingErrorMessage": "Houve um erro a emparelhar o dispositivo",
+    "bluetoothOffMessage": "Parece que o seu bluetooth está desligado. Pretende ligá-lo?",
+    "bluetoothNotAvailableMessage": "O seu dispositivo não suporta tecnologia bluetooth. Iremos fechar a aplicação agora.",
+    "connectionError": "Erro de Conexão",
+    "connectionErrorMessage": "Houve um erro a conectar com o dispositivo",
+    "searchingDevices": "A procurar dispositivos...",
+    "connectingToDevice": "A conectar ao dispositivo ",
+    "grab": "Agarrar",
+    "attack": "Atacar",
+    "dance": "Dançar",
+    "velocity": "Velocidade",
+    "disconnectedFromDevice": "Desconectado do dispositivo",
+    "permissionsError":"Erro de Permissão",
+    "permissionsErrorMessage": "Têm de aceitar permissões para a aplicação funcionar. Vamos fechar a aplicação agora.",
+    "release": "Largar",
+    "stop" : "Parar"
 }

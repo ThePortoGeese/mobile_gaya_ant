@@ -104,15 +104,17 @@ class BluetoothModule with ChangeNotifier{
           notifyListeners();
         }
       }
-      bluetoothConnection = await BluetoothConnection.toAddress(mac);
+      bluetoothConnection = await BluetoothConnection.toAddress(mac).timeout(const Duration(seconds: 6));
+
       if(bluetoothConnection?.isConnected ?? false){
         btState = BTState.connected;
         currentMacAdress = mac;
       } else {
+        debugPrint("Error Connection");
         btState = BTState.errorConnection;
-        }
+      }
     } catch (e){
-        btState = BTState.uknown;
+        btState = BTState.errorConnection;
     }
     notifyListeners();
   }
@@ -122,15 +124,17 @@ class BluetoothModule with ChangeNotifier{
     
     btState = BTState.disconnected;
     currentMacAdress = "";
+    bluetoothConnection = null;
     notifyListeners();
   }
 
    void sendBytes(Uint8List i, String id) async{
     try {
+      lastSender = id;
+
       bluetoothConnection?.output.add(i);
       await bluetoothConnection?.output.allSent;
       debugPrint("Sent ${i.toString()}");
-      lastSender = id;
       notifyListeners();
       return;
     } catch (e){

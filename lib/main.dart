@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/bluetoothmodule.dart';
-import 'visuals/pages/menupage.dart';
+import 'package:mobile_gaya_ant/models/localenotifer.dart';
+import 'package:mobile_gaya_ant/visuals/pages/splashscreen.dart';
+import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
@@ -12,7 +13,11 @@ void main() {
     ChangeNotifierProvider
     (
       create: (_) => BluetoothModule(),
-      child: const MyApp()
+      child:  ChangeNotifierProvider
+      (
+        create: (_) => LocaleNotifer(),
+        child: const MyApp()
+      )
     )
   );
 }
@@ -23,22 +28,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Formigueiro Do ISPGAYA',
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        Locale('en'), 
-        Locale('pt'), 
-      ],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFFB923C)),
-      ),
-      home: const MenuPage(title: 'Controlo do Robô Formiga'),
+    return 
+      Consumer<LocaleNotifer>(
+      builder: (context, notifier, child) {
+        debugPrint(notifier.locale.toString());
+        return MaterialApp(
+          title: 'Formigueiro Do ISPGAYA',
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: notifier.locale,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFFB923C)),
+          ),
+          home: SplashScreen(),
+        );
+      }
     );
   }
 }
