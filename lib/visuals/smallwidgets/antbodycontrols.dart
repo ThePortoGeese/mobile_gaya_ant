@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/bluetoothmodule.dart';
+import '../../models/bluetoothmodule.dart';
 
 class AntBodyControls extends StatefulWidget {
   const AntBodyControls({super.key,});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
-import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/antactionbutton.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/antbodycontrols.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/tiltingdpad.dart';
@@ -62,11 +62,11 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
             transform: Matrix4.translationValues(0, (1 - _animation.value) * 1000, 0),
             child: Container(
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white, boxShadow: [BoxShadow(color: Colors.blueGrey, blurRadius: 5.0, spreadRadius: 1.0)]),
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(10),
               margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
               child: Column(
                 children: [
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
                   Stack(children:[
                     AntBodyControls() ,
                     Row(
@@ -78,7 +78,7 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                           child: Consumer<BluetoothModule>(
                             builder: (context, btm, child) => 
                             Visibility(
-                              visible: btm.lastAction != 5,
+                              visible: btm.lastAction != 5 && btm.lastAction <100, 
                               child: FloatingActionButton(
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30), side: BorderSide(width: 1)),
                                 backgroundColor: const Color(0xffDB3B3E),
@@ -93,8 +93,8 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                         ),
                       ],
                     ),]),
-                  SizedBox(height: 10,),
-                  Text(AppLocalizations.of(context)!.velocity, style: TextStyle(fontSize: 10 + _antVelocity*0.05),),
+                  SizedBox(height: 5,),
+                  Text(AppLocalizations.of(context)!.velocity, style: TextStyle(fontSize: 16),),
                   Consumer<BluetoothModule>(
                     builder: (context, btm, child) {
                       if(btm.bluetoothConnection == null) {
@@ -111,23 +111,26 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                     }
                   ),
                   Column(
-                    spacing: 20,
-
-                    children: <Widget>[
-                        AntActionButton(btnColor:  Color(0xffFFAA69),text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])]),
-                        TiltingDPad(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AntActionButton(btnColor:Color(0xffD9534F),text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])]),
-                            AntActionButton(btnColor:Color(0xffF4B400), text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])]),
-                        
-                          ],
-                        )
-                            
-                    ],
-                  ),
-            
+                    spacing: 5,
+                      //crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                          Row(
+                            children: [
+                              Expanded(child: AntActionButton(btnColor:  Color(0xffFFAA69),text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])])),
+                            ],
+                          ),
+                          TiltingDPad(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(child: AntActionButton(btnColor:Color(0xffD9534F),text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])])),
+                              SizedBox(width: 5,), 
+                              Expanded(child: AntActionButton(btnColor:Color(0xffF4B400), text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])])),
+                            ],
+                          ),
+                          
+                      ],
+                    ),
                 ],
               ),
             ),

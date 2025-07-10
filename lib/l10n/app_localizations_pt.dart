@@ -95,4 +95,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get stop => 'Parar';
+
+  @override
+  String get passwordNecessary => 'Palavra-chave Necessária';
+
+  @override
+  String get passwordNecessaryMessage =>
+      'Introduza a palavra-chave do dispositivo:';
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_gaya_ant/visuals/smallwidgets/devicelistitem.dart';
-import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
 import 'package:provider/provider.dart';
 
 class DeviceList extends StatefulWidget {

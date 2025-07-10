@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_fr.dart';
 import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
@@ -95,6 +96,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('fr'),
     Locale('pt'),
   ];
 
@@ -137,7 +139,7 @@ abstract class AppLocalizations {
   /// No description provided for @disconnect.
   ///
   /// In en, this message translates to:
-  /// **'Desconnect'**
+  /// **'Disconnect'**
   String get disconnect;
 
   /// No description provided for @connectedToDevice.
@@ -265,6 +267,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stop'**
   String get stop;
+
+  /// No description provided for @passwordNecessary.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Necessary'**
+  String get passwordNecessary;
+
+  /// No description provided for @passwordNecessaryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert the device\'s password:'**
+  String get passwordNecessaryMessage;
 }
 
 class _AppLocalizationsDelegate
@@ -278,7 +292,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'pt'].contains(locale.languageCode);
+      <String>['en', 'fr', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -289,6 +303,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
     case 'pt':
       return AppLocalizationsPt();
   }

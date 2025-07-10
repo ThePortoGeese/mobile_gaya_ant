@@ -5,7 +5,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 enum BTState {
-  disconnected, connected, errorConnection, errorPermission1,errorPermission2, errorBonding,errorSearch, off,loadingDevices, notAvailable, waiting, uknown
+  disconnected, connected, errorConnection, errorPermission1,errorPermission2, errorBonding,errorSearch, off, notAvailable, uknown
 }
 
 
@@ -55,8 +55,13 @@ class BluetoothModule with ChangeNotifier{
   }
 
   void requestEnableBluetooth() async{
+    btState = BTState.uknown;
     //Just requests the bt permission from the user
-    await FlutterBluetoothSerial.instance.requestEnable();
+    final b = await FlutterBluetoothSerial.instance.requestEnable();
+    if(b!){
+      btState = BTState.disconnected;
+    } 
+
   }
 
   Future<bool> checkBluetoothAvailability() async {
@@ -66,7 +71,7 @@ class BluetoothModule with ChangeNotifier{
     return isAvailable!;
   }
   
-  void deviceSearch() async{
+  Future<void> deviceSearch() async{
     //Request BT Permission
     try{
       if(!(await Permission.bluetoothScan.isGranted) || !(await Permission.bluetoothScan.isLimited)){
@@ -84,27 +89,28 @@ class BluetoothModule with ChangeNotifier{
 
     deviceInfo.clear();
 
-    btState = BTState.loadingDevices;
-    notifyListeners();
-
     await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
       deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
       notifyListeners();
     }
-
-    btState = BTState.waiting;
-    notifyListeners();
   }
 
-  Future<void> connectToDevice(String mac) async {
-    try {
-      if(!(await FlutterBluetoothSerial.instance.getBondStateForAddress(mac) == BluetoothBondState.bonded)){
-        bool? v = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(mac, pin: '1234');
-        if(!(v??false)){
-          btState = BTState.errorBonding;
-          notifyListeners();
+  Future<void> connectToDevice(String mac, String pin) async {
+      try{
+        if(!(await FlutterBluetoothSerial.instance.getBondStateForAddress(mac) == BluetoothBondState.bonded)){
+          bool? v = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(mac, pin: pin).timeout(const Duration(seconds: 8));
+          if(!(v??false)){
+            btState = BTState.errorBonding;
+            notifyListeners();
+          }
         }
+      } catch (e){
+        btState = BTState.errorBonding;
+        notifyListeners();
+        FlutterBluetoothSerial.instance.setPairingRequestHandler(null);
+        return;
       }
+    try {
       bluetoothConnection = await BluetoothConnection.toAddress(mac).timeout(const Duration(seconds: 6));
 
       if(bluetoothConnection?.isConnected ?? false){

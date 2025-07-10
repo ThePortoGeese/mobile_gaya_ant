@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide Size;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
-import 'package:mobile_gaya_ant/visuals/widgets/bluetoothmodule.dart';
+import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
 import 'package:mobile_gaya_ant/models/generalvalues.dart';
 import 'package:mobile_gaya_ant/visuals/dialogs/normalalert.dart';
 import 'package:provider/provider.dart';
@@ -40,32 +40,28 @@ class _AntActionButtonState extends State<AntActionButton> {
           functionNumber = 0;
         }
 
-        return Expanded(
-          child: SizedBox(
-            height: 50,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>((functionNumber == 0) ? widget.btnColor : transformPressedEffect(widget.btnColor)), 
-                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                     
-                    borderRadius: BorderRadius.circular(40.0),
-                    side: BorderSide(color: Colors.black, strokeAlign: (functionNumber == 0) ? 0 : 6),
+        return 
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all<Color>((functionNumber == 0) ? widget.btnColor : transformPressedEffect(widget.btnColor)), 
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
                     
-                  ))),
-              
-              onPressed: () {
-                setState(() {
-                  if(++functionNumber == widget.byte.length){
-                  functionNumber=0;
-                }
-                });
-                context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text[0]);
-              } , child: Text((functionNumber > widget.text.length-1) ? AppLocalizations.of(context)!.stop : widget.text[functionNumber], style: TextStyle(fontSize: 18))
-            ),
-          ),
-        );
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(color: Colors.black, strokeAlign: (functionNumber == 0) ? 0 : 6),
+                  
+                ))),
+            
+            onPressed: () {
+              setState(() {
+                if(++functionNumber == widget.byte.length){
+                functionNumber=0;
+              }
+              });
+              context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text[0]);
+            } , child: Text((functionNumber > widget.text.length-1) ? AppLocalizations.of(context)!.stop : widget.text[functionNumber], style: TextStyle(fontSize: 18))
+          );
       }
     );}   
 

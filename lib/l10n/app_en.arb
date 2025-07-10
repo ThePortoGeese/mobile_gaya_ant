@@ -9,7 +9,7 @@
     "connectionStatus": "Connection Status",
     "disconnectedStatus": "DISCONNECTED",
     "connect": "Connect", 
-    "disconnect": "Desconnect",
+    "disconnect": "Disconnect",
     "connectedToDevice": "Connected to Device ",
     "bluetoothError": "Bluetooth Error",
     "yes":"Yes",
@@ -25,10 +25,12 @@
     "grab": "Grab",
     "attack": "Attack",
     "dance": "Dance",
-    "velocity": "Velocity",
+    "velocity": "Speed",
     "disconnectedFromDevice": "Disconnected from device",
     "permissionsError":"Permission Error",
     "permissionsErrorMessage": "You must accept permissions for the app to run. We will close the app now",
     "release": "Release",
-    "stop": "Stop"
+    "stop": "Stop",
+    "passwordNecessary": "Password Necessary",
+    "passwordNecessaryMessage": "Insert the device's password:"
 }

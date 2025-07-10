@@ -30,5 +30,7 @@
     "permissionsError":"Erro de Permissão",
     "permissionsErrorMessage": "Têm de aceitar permissões para a aplicação funcionar. Vamos fechar a aplicação agora.",
     "release": "Largar",
-    "stop" : "Parar"
+    "stop" : "Parar",
+    "passwordNecessary": "Palavra-chave Necessária",
+    "passwordNecessaryMessage": "Introduza a palavra-chave do dispositivo:"
 }

@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connect => 'Connect';
 
   @override
-  String get disconnect => 'Desconnect';
+  String get disconnect => 'Disconnect';
 
   @override
   String get connectedToDevice => 'Connected to Device ';
@@ -96,4 +96,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stop => 'Stop';
+
+  @override
+  String get passwordNecessary => 'Password Necessary';
+
+  @override
+  String get passwordNecessaryMessage => 'Insert the device\'s password:';
 }
