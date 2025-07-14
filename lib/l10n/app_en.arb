@@ -28,9 +28,17 @@
     "velocity": "Speed",
     "disconnectedFromDevice": "Disconnected from device",
     "permissionsError":"Permission Error",
-    "permissionsErrorMessage": "You must accept permissions for the app to run. We will close the app now",
+    "permissionsErrorMessage": "You must accept permissions for the app to run.",
     "release": "Release",
     "stop": "Stop",
     "passwordNecessary": "Password Necessary",
-    "passwordNecessaryMessage": "Insert the device's password:"
+    "passwordNecessaryMessage": "Insert the device's password:",
+    "errorSearching" : "An Error Occured while Searching Devices",
+    "errorSearchingMessage" : "Try restarting the application.",
+    "welcome" : "Welcome!",
+    "welcomeMessage1":"This application serves as controls for the robot ant project here at ISPGAYA. You can connect the robot via bluetooth by pressing the \"Connect\" button",
+    "welcomeMessage2":"Select the robot and introduce the given password. Keep in mind that this app will only connect to the ant and trying to do anything else might cause unexpected behaviour.",
+    "welcomeMessage3":"When connected, the controls for the ant will appear, allowing you direct control over its movements.",
+    "welcomeMessage4":"This app requires you to grant it bluetooth permissions.",
+    "credits":"Made by David João at ISPGAYA"
 }

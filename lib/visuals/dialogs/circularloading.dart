@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+//THis is a dialog that I use when im waiting for asynchronous work
+//work such as searching devices or connecting to devices
+//It's just a spinning circle with a text below it
+
 class CircularLoading extends StatelessWidget {
 
   const CircularLoading({

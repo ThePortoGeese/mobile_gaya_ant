@@ -28,9 +28,18 @@
     "velocity": "Velocidade",
     "disconnectedFromDevice": "Desconectado do dispositivo",
     "permissionsError":"Erro de Permissão",
-    "permissionsErrorMessage": "Têm de aceitar permissões para a aplicação funcionar. Vamos fechar a aplicação agora.",
+    "permissionsErrorMessage": "Têm de aceitar permissões para a aplicação funcionar. ",
     "release": "Largar",
     "stop" : "Parar",
     "passwordNecessary": "Palavra-chave Necessária",
-    "passwordNecessaryMessage": "Introduza a palavra-chave do dispositivo:"
+    "passwordNecessaryMessage": "Introduza a palavra-chave do dispositivo:",
+    "errorSearching" : "Erro ao pesquisar dispositivos",
+    "errorSearchingMessage" : "Experimente abrir a aplicação de novo.",
+    "welcome" : "Bem Vindo!",
+    "welcomeMessage1":"Esta aplicação serve como controlo da formiga robô aqui no ISPGAYA. Conecta a formiga por bluetooth ao pressionar o butão \"Conectar\"",
+    "welcomeMessage2":"Seleciona o robô e introduz a palavra-chave dada. Esta app consegue apenas conectar ao robô e tentar conectar a outro dispositivo poderá resultar em comportamento inesperado.",
+    "welcomeMessage3":"Quando conectado, os controlos do robô irão aparecer, permitindo-te controlo direto dos seus movimentos.",
+    "welcomeMessage4":"Esta aplicação necessita de permissões bluetooth para funcionar.",
+    "credits": "Feito pelo David João no ISPGAYA"
+    
 }

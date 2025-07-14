@@ -28,9 +28,17 @@
     "velocity": "Velocité",
     "disconnectedFromDevice": "Déconnecté de l'appareil",
     "permissionsError":"Erreur d'autorisation",
-    "permissionsErrorMessage": "Vous devez accepter les autorisations pour que l'application fonctionne. Fermons l'application maintenant.",
+    "permissionsErrorMessage": "Vous devez accepter les autorisations pour que l'application fonctionne. ",
     "release": "Baisse",
     "stop" : "Pour arrêter",
     "passwordNecessary": "Mot de Passe Requis",
-    "passwordNecessaryMessage": "Entrez le mot de passe de l'appareil:"
+    "passwordNecessaryMessage": "Entrez le mot de passe de l'appareil:",
+    "errorSearching" : "Erreur Bluetooth",
+    "errorSearchingMessage" : " Une erreur s'est produite lors de la recherche des appareils. Essayez de redémarrer l'application.",
+    "welcome" : "Bienvenue!",
+    "welcomeMessage1":"Cette application contrôle la fourmi robot d'ISPGAYA. Connectez-la via Bluetooth en appuyant sur le bouton « Connecter ».",
+    "welcomeMessage2":"Sélectionnez le robot et saisissez le mot de passe fourni. Cette application ne peut se connecter qu'au robot ; toute tentative de connexion à un autre appareil peut entraîner un comportement inattendu.",
+    "welcomeMessage3":"Une fois connecté, les commandes du robot apparaîtront, vous permettant de contrôler directement ses mouvements.",
+    "welcomeMessage4":"Cette application nécessite des autorisations Bluetooth pour fonctionner.",
+    "credits":"Réalisé par David João à ISPGAYA"
 }

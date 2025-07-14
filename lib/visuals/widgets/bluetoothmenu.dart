@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
-import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/visuals/smallwidgets/devicelist.dart';
+import 'package:ispgaya_ant/l10n/app_localizations.dart';
+import 'package:ispgaya_ant/models/bluetoothmodule.dart';
+import 'package:ispgaya_ant/visuals/smallwidgets/devicelist.dart';
 import 'package:provider/provider.dart';
 
+
+//This is the bluetooth menu, which really doesnt do much, it just triggers the ondevicetap, disconnectpressed and connectpressed
+//its mostly decorative
+//The text becomes invisible when the device is connected, leaving only the disconnect button as to occupy less space on mobile devices
+//The functions are in menupage.dart
 class BluetoothMenu extends StatelessWidget {
   const BluetoothMenu({
     super.key,

@@ -2,7 +2,7 @@
 
 Date : 2025-07-08 14:57:37
 
-Directory c:\\Users\\matia\\Documents\\ISPGAYA\\mobile_gaya_ant
+Directory c:\\Users\\matia\\Documents\\ISPGAYA\\ispgaya_ant
 
 Total : 78 files,  3588 codes, 480 comments, 744 blanks, all 4812 lines
 
@@ -51,7 +51,7 @@ Total : 78 files,  3588 codes, 480 comments, 744 blanks, all 4812 lines
 | [lib/visuals/smallwidgets/antbodycontrols.dart](/lib/visuals/smallwidgets/antbodycontrols.dart) | Dart | 121 | 1 | 14 | 136 |
 | [lib/visuals/smallwidgets/bottomsheet.dart](/lib/visuals/smallwidgets/bottomsheet.dart) | Dart | 16 | 0 | 4 | 20 |
 | [lib/visuals/smallwidgets/devicelistitem.dart](/lib/visuals/smallwidgets/devicelistitem.dart) | Dart | 17 | 0 | 5 | 22 |
-| [lib/visuals/smallwidgets/tiltingdpad.dart](/lib/visuals/smallwidgets/tiltingdpad.dart) | Dart | 169 | 2 | 32 | 203 |
+| [lib/visuals/smallwidgets/dPad.dart](/lib/visuals/smallwidgets/dPad.dart) | Dart | 169 | 2 | 32 | 203 |
 | [lib/visuals/widgets/antmovingcontrols.dart](/lib/visuals/widgets/antmovingcontrols.dart) | Dart | 74 | 2 | 10 | 86 |
 | [lib/visuals/widgets/bluetoothmenu.dart](/lib/visuals/widgets/bluetoothmenu.dart) | Dart | 78 | 0 | 3 | 81 |
 | [lib/visuals/widgets/bluetoothmodule.dart](/lib/visuals/widgets/bluetoothmodule.dart) | Dart | 110 | 6 | 26 | 142 |
@@ -70,7 +70,7 @@ Total : 78 files,  3588 codes, 480 comments, 744 blanks, all 4812 lines
 | [macos/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json](/macos/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json) | JSON | 68 | 0 | 1 | 69 |
 | [macos/Runner/Base.lproj/MainMenu.xib](/macos/Runner/Base.lproj/MainMenu.xib) | XML | 343 | 0 | 1 | 344 |
 | [macos/Runner/MainFlutterWindow.swift](/macos/Runner/MainFlutterWindow.swift) | Swift | 12 | 0 | 4 | 16 |
-| [mobile\_gaya\_ant.code-workspace](/mobile_gaya_ant.code-workspace) | JSON with Comments | 8 | 0 | 0 | 8 |
+| [mobile\_gaya\_ant.code-workspace](/ispgaya_ant.code-workspace) | JSON with Comments | 8 | 0 | 0 | 8 |
 | [pubspec.yaml](/pubspec.yaml) | YAML | 40 | 46 | 17 | 103 |
 | [test/widget\_test.dart](/test/widget_test.dart) | Dart | 14 | 10 | 7 | 31 |
 | [web/index.html](/web/index.html) | HTML | 19 | 15 | 5 | 39 |

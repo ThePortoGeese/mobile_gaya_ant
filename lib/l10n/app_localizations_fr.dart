@@ -79,7 +79,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dance => 'Danser';
 
   @override
-  String get velocity => 'Vitesse';
+  String get velocity => 'Velocité';
 
   @override
   String get disconnectedFromDevice => 'Déconnecté de l\'appareil';
@@ -89,7 +89,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get permissionsErrorMessage =>
-      'Vous devez accepter les autorisations pour que l\'application fonctionne. Fermons l\'application maintenant.';
+      'Vous devez accepter les autorisations pour que l\'application fonctionne. ';
 
   @override
   String get release => 'Baisse';
@@ -103,4 +103,33 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get passwordNecessaryMessage =>
       'Entrez le mot de passe de l\'appareil:';
+
+  @override
+  String get errorSearching => 'Erreur Bluetooth';
+
+  @override
+  String get errorSearchingMessage =>
+      ' Une erreur s\'est produite lors de la recherche des appareils. Essayez de redémarrer l\'application.';
+
+  @override
+  String get welcome => 'Bienvenue!';
+
+  @override
+  String get welcomeMessage1 =>
+      'Cette application contrôle la fourmi robot d\'ISPGAYA. Connectez-la via Bluetooth en appuyant sur le bouton « Connecter ».';
+
+  @override
+  String get welcomeMessage2 =>
+      'Sélectionnez le robot et saisissez le mot de passe fourni. Cette application ne peut se connecter qu\'au robot ; toute tentative de connexion à un autre appareil peut entraîner un comportement inattendu.';
+
+  @override
+  String get welcomeMessage3 =>
+      'Une fois connecté, les commandes du robot apparaîtront, vous permettant de contrôler directement ses mouvements.';
+
+  @override
+  String get welcomeMessage4 =>
+      'Cette application nécessite des autorisations Bluetooth pour fonctionner.';
+
+  @override
+  String get credits => 'Réalisé par David João à ISPGAYA';
 }

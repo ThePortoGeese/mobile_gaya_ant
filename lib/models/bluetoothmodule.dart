@@ -10,14 +10,28 @@ enum BTState {
 
 
 class BluetoothModule with ChangeNotifier{
+
+  //State of the module, used for state management in menupage
   BTState btState = BTState.off;
+
+  //This holds the current bluetooth connection (only 1 at a time)
   BluetoothConnection? bluetoothConnection;
+
+  //Holds the info for devices detected by bluetooth
   Map<String, String> deviceInfo = {};
+
+  //Mac of the current connection
   String? currentMacAdress = "";
+
+  //String that identifies the last control to sendData
   String lastSender = "";
+
+  //Last byte sent
   int lastAction = 0;
 
+  //Async fuction that initializaes bluetooth
   Future<void> initializeBluetooth() async{
+    //Sets up the event listener for state change
     FlutterBluetoothSerial.instance.onStateChanged().listen((newState){
         handleBluetoothStateChange(newState);
       }
@@ -29,12 +43,14 @@ class BluetoothModule with ChangeNotifier{
       notifyListeners();
     }
 
+    //Request permission from user 
     if(!(await Permission.bluetoothConnect.isGranted)){
       final status = await Permission.bluetoothConnect.request();
 
       if(status == PermissionStatus.denied){
         btState = BTState.errorPermission1;
         notifyListeners();
+        return;
       }
     }
     //I try to see what state is bluetooth on
@@ -45,6 +61,7 @@ class BluetoothModule with ChangeNotifier{
     handleBluetoothStateChange(initialBTState);
   }
 
+  //Changes the state of the module so my main page can react to it
   void handleBluetoothStateChange(BluetoothState newState) async{
     if(newState == BluetoothState.STATE_OFF){
       btState = BTState.off;
@@ -54,6 +71,7 @@ class BluetoothModule with ChangeNotifier{
     notifyListeners();
   }
 
+  //Requests the user to enable bt
   void requestEnableBluetooth() async{
     btState = BTState.uknown;
     //Just requests the bt permission from the user
@@ -64,11 +82,16 @@ class BluetoothModule with ChangeNotifier{
 
   }
 
+  //Checks if the device even has bluetooth
   Future<bool> checkBluetoothAvailability() async {
     //This functions checks if the device even has bt, if it doesnt, it closes
-    final bool? isAvailable = await FlutterBluetoothSerial.instance.isAvailable;
+    try{
+      final bool? isAvailable = await FlutterBluetoothSerial.instance.isAvailable;
+      return isAvailable!;
+    } catch (e){
+      return false;
+    }
 
-    return isAvailable!;
   }
   
   Future<void> deviceSearch() async{
@@ -82,23 +105,29 @@ class BluetoothModule with ChangeNotifier{
           return;
         }
       }
+      //clears previously detected devices
+      deviceInfo.clear();
+      notifyListeners();
+
+      await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
+        deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
+        notifyListeners();
+      }
     } catch (e){
       btState = BTState.errorSearch;
     }
+  }
 
-
-    deviceInfo.clear();
-
-    await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
-      deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
-      notifyListeners();
-    }
+  Future<bool> checkDeviceBonded(String mac) async {
+    //Checks if the mac is bonded to this device
+    return (await FlutterBluetoothSerial.instance.getBondStateForAddress(mac) == BluetoothBondState.bonded);
   }
 
   Future<void> connectToDevice(String mac, String pin) async {
+    //tries to bond with the device if he isnt already
       try{
         if(!(await FlutterBluetoothSerial.instance.getBondStateForAddress(mac) == BluetoothBondState.bonded)){
-          bool? v = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(mac, pin: pin).timeout(const Duration(seconds: 8));
+          bool? v = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(mac, pin: pin);
           if(!(v??false)){
             btState = BTState.errorBonding;
             notifyListeners();
@@ -111,13 +140,14 @@ class BluetoothModule with ChangeNotifier{
         return;
       }
     try {
+      //tries to establish a connection
       bluetoothConnection = await BluetoothConnection.toAddress(mac).timeout(const Duration(seconds: 6));
 
       if(bluetoothConnection?.isConnected ?? false){
         btState = BTState.connected;
         currentMacAdress = mac;
       } else {
-        debugPrint("Error Connection");
+        //debugPrint("Error Connection");
         btState = BTState.errorConnection;
       }
     } catch (e){
@@ -127,6 +157,7 @@ class BluetoothModule with ChangeNotifier{
   }
 
   void disconnectFromDevice() async{
+    //Disconnects and resets attributes of the module
     await bluetoothConnection?.finish();
     
     btState = BTState.disconnected;
@@ -136,13 +167,14 @@ class BluetoothModule with ChangeNotifier{
   }
 
    void sendBytes(Uint8List i, String id) async{
+    //Tries to sent bytes and sets the last values to their corresponding values
     try {
       lastSender = id;
 
       bluetoothConnection?.output.add(i);
       await bluetoothConnection?.output.allSent;
       lastAction = i[0].toInt();
-      debugPrint("Sent ${i.toString()}");
+      //debugPrint("Sent ${i.toString()}");
       notifyListeners();
       return;
     } catch (e){

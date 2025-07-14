@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mobile_gaya_ant",
+            "name": "ispgaya_ant",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "mobile_gaya_ant (profile mode)",
+            "name": "ispgaya_ant (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "mobile_gaya_ant (release mode)",
+            "name": "ispgaya_ant (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

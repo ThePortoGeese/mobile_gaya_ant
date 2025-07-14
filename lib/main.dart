@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/models/localenotifer.dart';
-import 'package:mobile_gaya_ant/visuals/pages/splashscreen.dart';
-import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
+import 'package:ispgaya_ant/models/localenotifer.dart';
+import 'package:ispgaya_ant/visuals/pages/splashscreen.dart';
+import 'package:ispgaya_ant/models/bluetoothmodule.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
- 
+  //just makes the providers for the bluetooth module and the locale notifier
   runApp(
     ChangeNotifierProvider
     (
@@ -25,13 +25,12 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return 
       Consumer<LocaleNotifer>(
       builder: (context, notifier, child) {
-        debugPrint(notifier.locale.toString());
         return MaterialApp(
           title: 'Formigueiro Do ISPGAYA',
           localizationsDelegates: [
@@ -41,6 +40,7 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
+          //sets the app's locale based on notifier's locale value
           locale: notifier.locale,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFFB923C)),

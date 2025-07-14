@@ -1,4 +1,4 @@
-package com.example.mobile_gaya_ant
+package com.example.ispgaya_ant
 
 import io.flutter.embedding.android.FlutterActivity
 

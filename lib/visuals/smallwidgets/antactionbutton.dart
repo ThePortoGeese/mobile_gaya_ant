@@ -1,22 +1,18 @@
-
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide Size;
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
-import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/models/generalvalues.dart';
-import 'package:mobile_gaya_ant/visuals/dialogs/normalalert.dart';
+import 'package:ispgaya_ant/l10n/app_localizations.dart';
+import 'package:ispgaya_ant/models/bluetoothmodule.dart';
 import 'package:provider/provider.dart';
 
 class AntActionButton extends StatefulWidget {
   const AntActionButton({
     super.key,
+    required this.id,
     required this.text,
     required this.byte,
     required this.btnColor
   });
+  final String id;
   final List<String> text;
   final List<Uint8List> byte;
   final Color btnColor;
@@ -25,6 +21,15 @@ class AntActionButton extends StatefulWidget {
   State<AntActionButton> createState() => _AntActionButtonState();
 }
 
+//This is a little customizable action button which can have an infinite number of states
+//You need to pass the bytes that each action sends and its text
+//The first byte should always be the neutral state of the part you are moving as the button naturally starts inactive
+//when functionNumber is 0, the button is inactive
+//the button changes colour to a slightly more saturated and darker value of the original colour
+//and it's border changes a bit
+//If you dont provide a text for the last state, it gets provided to you (Default is stop)
+//Also, the order of the text should be Action1-ActionN-NeutralState
+
 class _AntActionButtonState extends State<AntActionButton> {
   int functionNumber = 0;
 
@@ -32,14 +37,16 @@ class _AntActionButtonState extends State<AntActionButton> {
   Widget build(BuildContext context) {
     return Consumer<BluetoothModule>(
       builder: (context, btm, child) {
+
         if(btm.bluetoothConnection != null){
-          if(btm.lastSender != widget.text[0]){
+          if(btm.lastSender != widget.id){
             functionNumber = 0;
           }
         } else {
           functionNumber = 0;
         }
 
+        //debugPrint(widget.text[0] + " " + functionNumber.toString());
         return 
           ElevatedButton(
             style: ButtonStyle(
@@ -59,7 +66,7 @@ class _AntActionButtonState extends State<AntActionButton> {
                 functionNumber=0;
               }
               });
-              context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber], widget.text[0]);
+              context.read<BluetoothModule>().sendBytes(widget.byte[functionNumber],widget.id);
             } , child: Text((functionNumber > widget.text.length-1) ? AppLocalizations.of(context)!.stop : widget.text[functionNumber], style: TextStyle(fontSize: 18))
           );
       }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
+import 'package:ispgaya_ant/l10n/app_localizations.dart';
 
 class PasswordPopUp extends StatefulWidget {
   const PasswordPopUp({super.key});
@@ -8,6 +8,8 @@ class PasswordPopUp extends StatefulWidget {
 }
 
 class _PasswordPopUpState extends State<PasswordPopUp> {
+
+  //This is a controller for the text field, that way I can retrieve the text when popping
   final _textEditingController = TextEditingController();
 
   @override
@@ -19,6 +21,9 @@ class _PasswordPopUpState extends State<PasswordPopUp> {
   String retrieveText(){
     return _textEditingController.text;
   }
+
+  //This dialog just prompts the user to introduce the password for the given device
+  //Simple
 
     @override
   Widget build(BuildContext context) {

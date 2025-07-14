@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
-import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
-import 'package:mobile_gaya_ant/visuals/smallwidgets/antactionbutton.dart';
-import 'package:mobile_gaya_ant/visuals/smallwidgets/antbodycontrols.dart';
-import 'package:mobile_gaya_ant/visuals/smallwidgets/tiltingdpad.dart';
+import 'package:ispgaya_ant/l10n/app_localizations.dart';
+import 'package:ispgaya_ant/models/bluetoothmodule.dart';
+import 'package:ispgaya_ant/visuals/smallwidgets/antactionbutton.dart';
+import 'package:ispgaya_ant/visuals/smallwidgets/antbodycontrols.dart';
+import 'package:ispgaya_ant/visuals/smallwidgets/dpad.dart';
 import 'package:provider/provider.dart';
 
+//this is the widget that actually uses the dpad and the action buttons
+//It features a little animation that comes from the ground and looks cool
+//it also has a slider that changes value based on the velocity
 
 class AntMovingControls extends StatefulWidget {
   const AntMovingControls({
@@ -63,7 +66,7 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
             child: Container(
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: Colors.white, boxShadow: [BoxShadow(color: Colors.blueGrey, blurRadius: 5.0, spreadRadius: 1.0)]),
               padding: const EdgeInsets.all(10),
-              margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              margin: EdgeInsets.only(left: 10, right: 10),
               child: Column(
                 children: [
                   SizedBox(height: 5),
@@ -97,8 +100,9 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                   Text(AppLocalizations.of(context)!.velocity, style: TextStyle(fontSize: 16),),
                   Consumer<BluetoothModule>(
                     builder: (context, btm, child) {
-                      if(btm.bluetoothConnection == null) {
-                        _antVelocity = 120;
+                      //resets velocity
+                      if(btm.lastSender == "disconnectButton") {
+                        _antVelocity = 100;
                       }
                       return Slider(value: _antVelocity,min: 100,max: 190, onChanged: (value) {
                         btm.sendBytes(Uint8List.fromList([value.toInt()]), "VelocityMeter");
@@ -106,6 +110,7 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                           _antVelocity = value;
                         });
                       },
+                      //cool sliding effect based on value of the slider
                       activeColor: Color.lerp(Colors.green, Colors.red  , (_antVelocity-100)/100 )
                       );
                     }
@@ -116,16 +121,16 @@ class _AntMovingControlsState extends State<AntMovingControls> with SingleTicker
                       children: <Widget>[
                           Row(
                             children: [
-                              Expanded(child: AntActionButton(btnColor:  Color(0xffFFAA69),text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])])),
+                              Expanded(child: AntActionButton(id: "Grab", btnColor:  Color(0xffFFAA69),text: [AppLocalizations.of(context)!.grab, AppLocalizations.of(context)!.release], byte: [Uint8List.fromList([8]),Uint8List.fromList([9])])),
                             ],
                           ),
-                          TiltingDPad(),
+                          dPad(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(child: AntActionButton(btnColor:Color(0xffD9534F),text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])])),
+                              Expanded(child: AntActionButton(id:"Attack",btnColor:Color(0xffD9534F),text: [AppLocalizations.of(context)!.attack], byte: [Uint8List.fromList([5]),Uint8List.fromList([10])])),
                               SizedBox(width: 5,), 
-                              Expanded(child: AntActionButton(btnColor:Color(0xffF4B400), text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])])),
+                              Expanded(child: AntActionButton(id: "Dance",btnColor:Color(0xffF4B400), text: [AppLocalizations.of(context)!.dance], byte: [Uint8List.fromList([5]), Uint8List.fromList([20])])),
                             ],
                           ),
                           

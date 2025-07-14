@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//Generic alert
+
 class Normalalert extends StatelessWidget {
 
   const Normalalert({

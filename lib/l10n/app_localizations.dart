@@ -235,7 +235,7 @@ abstract class AppLocalizations {
   /// No description provided for @velocity.
   ///
   /// In en, this message translates to:
-  /// **'Velocity'**
+  /// **'Speed'**
   String get velocity;
 
   /// No description provided for @disconnectedFromDevice.
@@ -253,7 +253,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionsErrorMessage.
   ///
   /// In en, this message translates to:
-  /// **'You must accept permissions for the app to run. We will close the app now'**
+  /// **'You must accept permissions for the app to run.'**
   String get permissionsErrorMessage;
 
   /// No description provided for @release.
@@ -279,6 +279,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insert the device\'s password:'**
   String get passwordNecessaryMessage;
+
+  /// No description provided for @errorSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'An Error Occured while Searching Devices'**
+  String get errorSearching;
+
+  /// No description provided for @errorSearchingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try restarting the application.'**
+  String get errorSearchingMessage;
+
+  /// No description provided for @welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get welcome;
+
+  /// No description provided for @welcomeMessage1.
+  ///
+  /// In en, this message translates to:
+  /// **'This application serves as controls for the robot ant project here at ISPGAYA. You can connect the robot via bluetooth by pressing the \"Connect\" button'**
+  String get welcomeMessage1;
+
+  /// No description provided for @welcomeMessage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the robot and introduce the given password. Keep in mind that this app will only connect to the ant and trying to do anything else might cause unexpected behaviour.'**
+  String get welcomeMessage2;
+
+  /// No description provided for @welcomeMessage3.
+  ///
+  /// In en, this message translates to:
+  /// **'When connected, the controls for the ant will appear, allowing you direct control over its movements.'**
+  String get welcomeMessage3;
+
+  /// No description provided for @welcomeMessage4.
+  ///
+  /// In en, this message translates to:
+  /// **'This app requires you to grant it bluetooth permissions.'**
+  String get welcomeMessage4;
+
+  /// No description provided for @credits.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by David João at ISPGAYA'**
+  String get credits;
 }
 
 class _AppLocalizationsDelegate

@@ -1,7 +1,9 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/visuals/pages/menupage.dart';
+import 'package:ispgaya_ant/visuals/pages/menupage.dart';
 import 'package:page_transition/page_transition.dart';
+
+//
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({super.key});
@@ -9,6 +11,9 @@ class SplashScreen extends StatefulWidget{
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
+
+//This is just the splash screen for the app, you know, the screen that appears when the app starts?
+//it used the animated_splash_screen package
 
 class _SplashScreenState extends State<SplashScreen> {
 
@@ -35,7 +40,7 @@ class SplashScreenRotation extends StatefulWidget  {
 
 class _SplashScreenRotationState extends State<SplashScreenRotation> with SingleTickerProviderStateMixin {
     late AnimationController _controller;
-
+  //I wanted ISP's logo to rotate since I found it extremely funny, anyways, thats about it 
   @override
   void initState() {
     _controller = AnimationController(

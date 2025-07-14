@@ -79,7 +79,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dance => 'Dance';
 
   @override
-  String get velocity => 'Velocity';
+  String get velocity => 'Speed';
 
   @override
   String get disconnectedFromDevice => 'Disconnected from device';
@@ -89,7 +89,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionsErrorMessage =>
-      'You must accept permissions for the app to run. We will close the app now';
+      'You must accept permissions for the app to run.';
 
   @override
   String get release => 'Release';
@@ -102,4 +102,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordNecessaryMessage => 'Insert the device\'s password:';
+
+  @override
+  String get errorSearching => 'An Error Occured while Searching Devices';
+
+  @override
+  String get errorSearchingMessage => 'Try restarting the application.';
+
+  @override
+  String get welcome => 'Welcome!';
+
+  @override
+  String get welcomeMessage1 =>
+      'This application serves as controls for the robot ant project here at ISPGAYA. You can connect the robot via bluetooth by pressing the \"Connect\" button';
+
+  @override
+  String get welcomeMessage2 =>
+      'Select the robot and introduce the given password. Keep in mind that this app will only connect to the ant and trying to do anything else might cause unexpected behaviour.';
+
+  @override
+  String get welcomeMessage3 =>
+      'When connected, the controls for the ant will appear, allowing you direct control over its movements.';
+
+  @override
+  String get welcomeMessage4 =>
+      'This app requires you to grant it bluetooth permissions.';
+
+  @override
+  String get credits => 'Made by David João at ISPGAYA';
 }

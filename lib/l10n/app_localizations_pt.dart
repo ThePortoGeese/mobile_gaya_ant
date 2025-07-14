@@ -88,7 +88,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permissionsErrorMessage =>
-      'Têm de aceitar permissões para a aplicação funcionar. Vamos fechar a aplicação agora.';
+      'Têm de aceitar permissões para a aplicação funcionar. ';
 
   @override
   String get release => 'Largar';
@@ -102,4 +102,32 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get passwordNecessaryMessage =>
       'Introduza a palavra-chave do dispositivo:';
+
+  @override
+  String get errorSearching => 'Erro ao pesquisar dispositivos';
+
+  @override
+  String get errorSearchingMessage => 'Experimente abrir a aplicação de novo.';
+
+  @override
+  String get welcome => 'Bem Vindo!';
+
+  @override
+  String get welcomeMessage1 =>
+      'Esta aplicação serve como controlo da formiga robô aqui no ISPGAYA. Conecta a formiga por bluetooth ao pressionar o butão \"Conectar\"';
+
+  @override
+  String get welcomeMessage2 =>
+      'Seleciona o robô e introduz a palavra-chave dada. Esta app consegue apenas conectar ao robô e tentar conectar a outro dispositivo poderá resultar em comportamento inesperado.';
+
+  @override
+  String get welcomeMessage3 =>
+      'Quando conectado, os controlos do robô irão aparecer, permitindo-te controlo direto dos seus movimentos.';
+
+  @override
+  String get welcomeMessage4 =>
+      'Esta aplicação necessita de permissões bluetooth para funcionar.';
+
+  @override
+  String get credits => 'Feito pelo David João no ISPGAYA';
 }

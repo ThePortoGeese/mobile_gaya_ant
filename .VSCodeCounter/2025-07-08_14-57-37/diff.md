@@ -2,7 +2,7 @@
 
 Date : 2025-07-08 14:57:37
 
-Directory c:\\Users\\matia\\Documents\\ISPGAYA\\mobile_gaya_ant
+Directory c:\\Users\\matia\\Documents\\ISPGAYA\\ispgaya_ant
 
 Total : 0 files,  0 codes, 0 comments, 0 blanks, all 0 lines
 

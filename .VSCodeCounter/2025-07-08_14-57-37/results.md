@@ -2,7 +2,7 @@
 
 Date : 2025-07-08 14:57:37
 
-Directory c:\\Users\\matia\\Documents\\ISPGAYA\\mobile_gaya_ant
+Directory c:\\Users\\matia\\Documents\\ISPGAYA\\ispgaya_ant
 
 Total : 78 files,  3588 codes, 480 comments, 744 blanks, all 4812 lines
 

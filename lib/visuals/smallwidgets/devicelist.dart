@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_gaya_ant/visuals/smallwidgets/devicelistitem.dart';
-import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
+import 'package:ispgaya_ant/visuals/smallwidgets/devicelistitem.dart';
+import 'package:ispgaya_ant/models/bluetoothmodule.dart';
 import 'package:provider/provider.dart';
 
 class DeviceList extends StatefulWidget {
@@ -17,6 +17,14 @@ class DeviceList extends StatefulWidget {
   State<DeviceList> createState() => _DeviceListState();
 }
 
+//This list, which is just a container with a visibility and a listview
+//is filled with all the devices the bluetooth module detects
+//as the length of device info starts increasing, so does the list view
+//It features a small animation which just hides it and unhides it behind the visible
+//The 2 booleans are necessary so the animation isnt clipped
+//when the list is not supposed to be visible, the reverse animation starts and only then does the visibility actually change
+ 
+
 class _DeviceListState extends State<DeviceList> with SingleTickerProviderStateMixin {
   bool listVisible = false;
   late final AnimationController _animationController = AnimationController(vsync: this , duration: Duration(milliseconds: 1000));
@@ -30,9 +38,8 @@ class _DeviceListState extends State<DeviceList> with SingleTickerProviderStateM
 
   @override
   void didChangeDependencies() {
-    debugPrint("Triggered");
+    //debugPrint("Triggered");
     super.didChangeDependencies();
-
   }
 
   @override
@@ -67,12 +74,15 @@ class _DeviceListState extends State<DeviceList> with SingleTickerProviderStateM
                   borderRadius: BorderRadius.circular(15),
                 ),
                 padding: const EdgeInsets.all(10),
-                child: ListView.builder(
-                  itemCount: context.read<BluetoothModule>().deviceInfo.length,
-                  itemBuilder: (context, index) {
-                    final mac   = context.read<BluetoothModule>().deviceInfo.keys.elementAt(index);
-                    return DeviceListItem(value: context.read<BluetoothModule>().deviceInfo[mac]!, onDeviceTap: () => widget.onDeviceTap(mac));
-                  } 
+                child: RawScrollbar(
+                  thumbColor: Color(0xff194B97),
+                  child: ListView.builder(
+                    itemCount: context.read<BluetoothModule>().deviceInfo.length,
+                    itemBuilder: (context, index) {
+                      final mac   = context.read<BluetoothModule>().deviceInfo.keys.elementAt(index);
+                      return DeviceListItem(value: context.read<BluetoothModule>().deviceInfo[mac]!, onDeviceTap: () => widget.onDeviceTap(mac));
+                    } 
+                  ),
                 ),
               ),
             ),

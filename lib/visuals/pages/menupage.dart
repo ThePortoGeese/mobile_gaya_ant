@@ -1,10 +1,12 @@
   import 'dart:io';
-
-  import 'package:flutter/material.dart';
-  import 'package:mobile_gaya_ant/l10n/app_localizations.dart';
-  import 'package:mobile_gaya_ant/models/localenotifer.dart';
-import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
-  import 'package:mobile_gaya_ant/models/bluetoothmodule.dart';
+import 'package:ispgaya_ant/visuals/dialogs/welcomepopup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+  import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+  import 'package:ispgaya_ant/l10n/app_localizations.dart';
+  import 'package:ispgaya_ant/models/localenotifer.dart';
+  import 'package:ispgaya_ant/visuals/dialogs/passwordpopup.dart';
+  import 'package:ispgaya_ant/models/bluetoothmodule.dart';
   import 'package:provider/provider.dart';
   import '../widgets/bluetoothmenu.dart';
   import '../dialogs/circularloading.dart';
@@ -24,33 +26,56 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
     //THIS IS THE ICON OF THE LANGUAGE BUTTON
     Widget? currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
 
-    @override
-    void initState(){
-      super.initState();
+    //this function checks if it's the users first time using shared preferences and initializes the bluetooth in the bluetooth module
+    void startApp() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool? firstTime = prefs.getBool("firstTime");
+
+      if(firstTime??true){
+        if(mounted){
+          await showDialog(context: context, builder: (context) => WelcomePopUp());
+          prefs.setBool('firstTime', false);
+        }
+      }
+      if(!mounted) return;
+
       //WHEN THE USER OPENS THE APP, I TRY TO INITIALIZE ITS BLUETOOTH FUNCTIONS
       context.read<BluetoothModule>().addListener(handleBtStateChange);
       context.read<BluetoothModule>().initializeBluetooth();
     }
 
     @override
+    void initState(){
+      super.initState();
+
+      startApp();
+    }
+    //disposes of the widget
+    @override
     void dispose() {
       context.read<BluetoothModule>().removeListener(handleBtStateChange);
       super.dispose();
     }
 
+
+    //when the btstate of the module changes, ts gets triggered
+    //mostly used for state management
     void handleBtStateChange() async{
       BTState bts = context.read<BluetoothModule>().btState;
     
       switch (bts){
         case BTState.connected:
+          //when connected, the device list should be invis
           setState(() {
             availableDevicesListIsVisible = false;
           }); 
         case BTState.disconnected:
+        //when disconnected, the button should be enabled (so he can connect)
           setState(() {
             bluetoothButtonEnabled = true;
           });
         case BTState.off:
+          //when the bt is off, the button shouldnt work and a prompt should appear so the user can enable it
           setState(() {
             bluetoothButtonEnabled = false;
           });
@@ -67,10 +92,12 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
               }, child: Text(AppLocalizations.of(context)!.no)),
             ],
           ),);
+        //errors that dont happen inside a function and therefore, its best I do it here
         case BTState.errorPermission1:          
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
           Normalalert(titleText: AppLocalizations.of(context)!.permissionsError, bodyText: AppLocalizations.of(context)!.permissionsErrorMessage,titleStyle: alertTitleStyle));
-          exit(0);
+          if(!mounted) return;
+          context.read<BluetoothModule>().initializeBluetooth();
         case BTState.notAvailable:
           await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
           Normalalert(titleText: AppLocalizations.of(context)!.bluetoothError, bodyText: AppLocalizations.of(context)!.bluetoothNotAvailableMessage,titleStyle: alertTitleStyle));
@@ -85,8 +112,17 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
 
     @override
     Widget build(BuildContext context) {
+
+      //I just coverted the country dialects  to the mother language and change the popupmennubtn based on that
+      //i also set default locale as pt
       String? selectedItem = context.watch<LocaleNotifer>().locale.toString();
-      if(selectedItem.contains("en")){
+      if(selectedItem.contains("pt")){
+        currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
+        selectedItem = "pt";
+      } else if(selectedItem.contains("fr")){
+        currentIcon = Image.asset('assets/frlang.png', width: 24,height: 24,fit: BoxFit.contain);
+        selectedItem = "fr";
+      } else {
         currentIcon = Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain);
         selectedItem = "en";
       }
@@ -103,6 +139,7 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
               tooltip: AppLocalizations.of(context)!.appLanguage,
               onSelected: (String value) {
                 setState(() {
+                  //Sets the locale and the icon for the popupmenubtn
                   selectedItem = value;
                   if(value == "en"){
                     currentIcon = Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain);
@@ -179,11 +216,11 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
       );
 
     }
-    bool deviceConnected = false;
     bool bluetoothButtonEnabled = false;
 
     //ZE BLUETOOTH DEVICE HAS BEEN CONNECTED
-
+    //Changes visibility of the list, shows the circular loading, and prompts the btm to search for available devices. if the btm.btstate 
+    //has an error related to this action, it will show a pop up and make the list invisible again
     void handleConnectButtonPressed() async {
       setState(() {
         availableDevicesListIsVisible = !availableDevicesListIsVisible;
@@ -195,15 +232,30 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
         await context.read<BluetoothModule>().deviceSearch();
         if(!mounted) return;
         Navigator.of(context).pop();
+
+        if(context.read<BluetoothModule>().btState == BTState.errorSearch){
+          showDialog(context: context, builder: (context) {
+            return  Normalalert(titleText: AppLocalizations.of(context)!.disconnectedStatus,bodyText: AppLocalizations.of(context)!.disconnectedFromDevice,titleStyle: alertTitleStyle,);
+          },
+          );
+          setState(() {
+            availableDevicesListIsVisible = false;
+          }); 
+
+        } else if(BTState.errorPermission2 == context.read<BluetoothModule>().btState){
+          await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+          Normalalert(titleText: AppLocalizations.of(context)!.permissionsError, bodyText: AppLocalizations.of(context)!.permissionsErrorMessage,titleStyle: alertTitleStyle));
+          setState(() {
+            availableDevicesListIsVisible = false;
+          }); 
+        } 
       }
     }
 
-
+    //Sends the neutral state code for the ant (so it doesnt keep moving after the user disconnects when, for exampple, pressing the dance button)
+    //Then tries to disconnect 
     void handleDisconnectButtonPressed() async{
-      setState(() {
-        deviceConnected = false;
-      });
-
+      context.read<BluetoothModule>().sendBytes(Uint8List.fromList([5]), "disconnectButton");
       context.read<BluetoothModule>().disconnectFromDevice();
 
       if(!mounted) return;
@@ -214,24 +266,29 @@ import 'package:mobile_gaya_ant/visuals/dialogs/passwordpopup.dart';
 
       }
     }
-
+    //asks the user for the device's password, default is 1234
     void handleDeviceTap(String mac) async {
-      PasswordPopUp pp = PasswordPopUp();
-      String pin = await showDialog<String>(context: context , barrierDismissible: false, builder: (context) {return pp;})??"1234";
+      String pin = "1234";
+      if(!(await context.read<BluetoothModule>().checkDeviceBonded(mac))){
+        if(!mounted) return;
+        pin = await showDialog<String>(context: context , barrierDismissible: false, builder: (context) {return PasswordPopUp();})??"1234";
+      }
       if(!mounted) return;
+
+      //shows the loading dialog again
       showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
         return CircularLoading(loadingText: "${AppLocalizations.of(context)!.connectingToDevice} ${context.read<BluetoothModule>().deviceInfo[mac]}");
       },);
-      
+
+      //and tries to connect to the device
       await context.read<BluetoothModule>().connectToDevice(mac, pin);
 
       if(!mounted) return;
+      //pops the loading dialog
       Navigator.of(context).pop();
-      if(BTState.errorPermission2 == context.read<BluetoothModule>().btState){
-        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-        Normalalert(titleText: AppLocalizations.of(context)!.permissionsError, bodyText: AppLocalizations.of(context)!.permissionsErrorMessage,titleStyle: alertTitleStyle));
-        exit(0);
-      } else if (BTState.errorBonding == context.read<BluetoothModule>().btState){
+
+      //checks if an error occured due to this action and shows the corresponding error
+      if (BTState.errorBonding == context.read<BluetoothModule>().btState){
         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
         Normalalert(titleText: AppLocalizations.of(context)!.bondingError, bodyText: AppLocalizations.of(context)!.bondingErrorMessage,titleStyle: alertTitleStyle));
       }
