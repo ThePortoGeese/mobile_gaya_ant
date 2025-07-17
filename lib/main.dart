@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
       Consumer<LocaleNotifer>(
       builder: (context, notifier, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Formigueiro Do ISPGAYA',
           localizationsDelegates: [
             AppLocalizations.delegate,
