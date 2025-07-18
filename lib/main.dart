@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       builder: (context, notifier, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Formigueiro Do ISPGAYA',
+          title: 'ISPGAYA Ant Robot',
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

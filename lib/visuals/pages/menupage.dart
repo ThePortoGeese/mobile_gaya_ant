@@ -49,6 +49,22 @@ import 'package:flutter/material.dart';
       super.initState();
 
       startApp();
+      final locale = WidgetsBinding.instance.platformDispatcher.locale.toString();
+      //UPDATE THIS LOGIC TO ADD MORE LANGUAGESSS
+      final langCode = locale.contains("pt")
+          ? "pt"
+          : locale.contains("fr")
+              ? "fr"
+              : "en";
+
+      selectedItem = langCode;
+      currentIcon = Image.asset(
+        'assets/${langCode}lang.png',
+        width: 24,
+        height: 24,
+        fit: BoxFit.contain,
+      );
+
     }
     //disposes of the widget
     @override
@@ -110,22 +126,14 @@ import 'package:flutter/material.dart';
     //THIS VARIABLE JUST CONTROLS IF THE DEVICE LIST IS VISIBLE OR NOT
     bool availableDevicesListIsVisible = false;
 
+    String? selectedItem = "en";
     @override
     Widget build(BuildContext context) {
 
       //I just coverted the country dialects  to the mother language and change the popupmennubtn based on that
       //i also set default locale as pt
-      String? selectedItem = context.watch<LocaleNotifer>().locale.toString();
-      if(selectedItem.contains("pt")){
-        currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
-        selectedItem = "pt";
-      } else if(selectedItem.contains("fr")){
-        currentIcon = Image.asset('assets/frlang.png', width: 24,height: 24,fit: BoxFit.contain);
-        selectedItem = "fr";
-      } else {
-        currentIcon = Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain);
-        selectedItem = "en";
-      }
+      String? changeLanguage = context.watch<LocaleNotifer>().locale.toString();
+      selectedItem = changeLanguage;
 
       return Scaffold(
         appBar: AppBar(
@@ -141,13 +149,12 @@ import 'package:flutter/material.dart';
                 setState(() {
                   //Sets the locale and the icon for the popupmenubtn
                   selectedItem = value;
-                  if(value == "en"){
-                    currentIcon = Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain);
-                  } else if (value == "pt") {
-                    currentIcon = Image.asset('assets/ptlang.png', width: 24,height: 24,fit: BoxFit.contain);
-                  } else {
-                    currentIcon = Image.asset('assets/frlang.png',width: 24,height: 24,fit: BoxFit.contain);
-                  }
+                  currentIcon = Image.asset(
+                    'assets/${selectedItem}lang.png',
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                  );
                   context.read<LocaleNotifer>().setLocale(Locale(selectedItem!));
                 });
               },  
@@ -165,7 +172,7 @@ import 'package:flutter/material.dart';
                 PopupMenuItem<String>(value: 'en', 
                   child: Row(
                     children: <Widget>[
-                      Image.asset('assets/englang.png', width: 24,height: 24,fit: BoxFit.contain),
+                      Image.asset('assets/enlang.png', width: 24,height: 24,fit: BoxFit.contain),
                       const SizedBox(width: 8),
                       Text("ENG") 
                     ]
