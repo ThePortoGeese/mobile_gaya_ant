@@ -15,6 +15,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "ispgaya_ant.apk"
+        }
+    }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
