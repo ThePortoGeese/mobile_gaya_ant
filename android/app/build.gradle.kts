@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    project.ext.set("ISPGAYA Ant Robot", "ispgaya_ant")
     namespace = "com.example.ispgaya_ant"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
@@ -13,12 +14,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    applicationVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = "ispgaya_ant.apk"
-        }
     }
 
     kotlinOptions {
@@ -32,6 +27,8 @@ android {
         targetSdk = 33
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        setProperty("archivesBaseName", "ispgaya-ant-$versionName")
     }
 
     buildTypes {
