@@ -49,23 +49,24 @@ import 'package:flutter/material.dart';
       super.initState();
 
       startApp();
-      final locale = WidgetsBinding.instance.platformDispatcher.locale.toString();
-      //UPDATE THIS LOGIC TO ADD MORE LANGUAGESSS
-      final langCode = locale.contains("pt")
-          ? "pt"
-          : locale.contains("fr")
-              ? "fr"
-              : "en";
 
-      selectedItem = langCode;
+      selectedItem = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
       currentIcon = Image.asset(
-        'assets/${langCode}lang.png',
+        'assets/${selectedItem}lang.png',
         width: 24,
         height: 24,
         fit: BoxFit.contain,
       );
-
     }
+
+    @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    setState(() {
+      
+    });
+  }
     //disposes of the widget
     @override
     void dispose() {
@@ -132,7 +133,7 @@ import 'package:flutter/material.dart';
 
       //I just coverted the country dialects  to the mother language and change the popupmennubtn based on that
       //i also set default locale as pt
-      String? changeLanguage = context.watch<LocaleNotifer>().locale.toString();
+      String? changeLanguage = context.watch<LocaleNotifer>().locale?.languageCode ?? 'en';
       selectedItem = changeLanguage;
 
       return Scaffold(
