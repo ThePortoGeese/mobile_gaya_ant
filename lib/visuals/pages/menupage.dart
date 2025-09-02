@@ -106,12 +106,11 @@ import 'package:flutter/material.dart';
           showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
             return CircularLoading(loadingText: AppLocalizations.of(context)!.connectingToDevice);
           },);
-        case BTState.searching:
+        case BTState.startSearch:
           showDialog(context: context, barrierDismissible: false, builder: (context) {
             return CircularLoading(loadingText: AppLocalizations.of(context)!.searchingDevices);
           },);  
         case BTState.connected:
-          Navigator.of(context).pop();
           //when connected, the device list should be invis
           setState(() {
             availableDevicesListIsVisible = false;
@@ -125,6 +124,7 @@ import 'package:flutter/material.dart';
           //when the bt is off, the button shouldnt work and a prompt should appear so the user can enable it
           setState(() {
             bluetoothButtonEnabled = false;
+            availableDevicesListIsVisible = false;
           });
           await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => AlertDialog(
             title: Text(AppLocalizations.of(context)!.bluetoothError,  style: alertTitleStyle),
@@ -264,9 +264,12 @@ import 'package:flutter/material.dart';
         availableDevicesListIsVisible = !availableDevicesListIsVisible;
       });
       if(availableDevicesListIsVisible){
-        await context.read<BluetoothModule>().deviceSearch();
-        if(!mounted) return;
-        Navigator.of(context).pop();
+        if(!(await context.read<BluetoothModule>().checkIfStreamIsBusy() ?? false)){
+          if(!mounted) return;
+          await context.read<BluetoothModule>().deviceSearch();
+          if(!mounted ||  context.read<BluetoothModule>().btState == BTState.errorPermission2) return;
+          Navigator.of(context).pop();
+        }
       }
     }
 
@@ -295,12 +298,12 @@ import 'package:flutter/material.dart';
       //shows the loading dialog again
       
       //and tries to connect to the device
-      if(await context.read<BluetoothModule>().connectToDevice(mac, pin) == FunctionState.failure) return;
 
       if(!mounted) return;
-      //pops the loading dialog
-      Navigator.of(context).pop();
-
+      if(await context.read<BluetoothModule>().connectToDevice(mac, pin) == FunctionState.failure) return;
       //checks if an error occured due to this action and shows the corresponding error
+
+      if(!mounted) return;
+      Navigator.of(context).pop();
     }
   }

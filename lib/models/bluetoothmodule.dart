@@ -5,7 +5,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 enum BTState {
-  disconnected, connected, errorConnection, errorPermission1,errorPermission2, errorBonding,errorSearch, off, notAvailable, uknown, connecting, searching
+  disconnected, connected, errorConnection, errorPermission1,errorPermission2, errorBonding,errorSearch, off, notAvailable, uknown, connecting, searching, startSearch
 }
 
 /// NOTE: All of the actions done by this module (or most) change its state to another
@@ -123,15 +123,18 @@ class BluetoothModule with ChangeNotifier{
 
         if(status != PermissionStatus.granted){
           btState = BTState.errorPermission2;
+          notifyListeners();
           return FunctionState.failure;
         }
       }
+      btState = BTState.startSearch;
       //clears previously detected devices
       deviceInfo.clear();
       notifyListeners();
 
       await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
         deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
+        btState = BTState.searching;
         notifyListeners();
       }
     } catch (e){
