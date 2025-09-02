@@ -61,7 +61,6 @@ import 'package:flutter/material.dart';
 
     @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     setState(() {
       
@@ -81,7 +80,38 @@ import 'package:flutter/material.dart';
       BTState bts = context.read<BluetoothModule>().btState;
     
       switch (bts){
+        case BTState.errorBonding:
+          Navigator.of(context).pop();
+          await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+            Normalalert(titleText: AppLocalizations.of(context)!.bondingError, bodyText: AppLocalizations.of(context)!.bondingErrorMessage,titleStyle: alertTitleStyle));
+        case BTState.errorConnection:
+          Navigator.of(context).pop();
+         await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+          Normalalert(titleText: AppLocalizations.of(context)!.connectionError, bodyText: AppLocalizations.of(context)!.connectionErrorMessage,titleStyle: alertTitleStyle));
+        case BTState.errorPermission2:
+          await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
+            Normalalert(titleText: AppLocalizations.of(context)!.permissionsError, bodyText: AppLocalizations.of(context)!.permissionsErrorMessage,titleStyle: alertTitleStyle));
+          setState(() {
+            availableDevicesListIsVisible = false;
+          }); 
+        case BTState.errorSearch:
+          showDialog(context: context, builder: (context) {
+            return  Normalalert(titleText: AppLocalizations.of(context)!.disconnectedStatus,bodyText: AppLocalizations.of(context)!.disconnectedFromDevice,titleStyle: alertTitleStyle,);
+          },
+          );
+          setState(() {
+            availableDevicesListIsVisible = false;
+          }); 
+        case BTState.connecting:
+          showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
+            return CircularLoading(loadingText: AppLocalizations.of(context)!.connectingToDevice);
+          },);
+        case BTState.searching:
+          showDialog(context: context, barrierDismissible: false, builder: (context) {
+            return CircularLoading(loadingText: AppLocalizations.of(context)!.searchingDevices);
+          },);  
         case BTState.connected:
+          Navigator.of(context).pop();
           //when connected, the device list should be invis
           setState(() {
             availableDevicesListIsVisible = false;
@@ -234,29 +264,9 @@ import 'package:flutter/material.dart';
         availableDevicesListIsVisible = !availableDevicesListIsVisible;
       });
       if(availableDevicesListIsVisible){
-        showDialog(context: context, barrierDismissible: false, builder: (context) {
-          return CircularLoading(loadingText: AppLocalizations.of(context)!.searchingDevices);
-        },);  
         await context.read<BluetoothModule>().deviceSearch();
         if(!mounted) return;
         Navigator.of(context).pop();
-
-        if(context.read<BluetoothModule>().btState == BTState.errorSearch){
-          showDialog(context: context, builder: (context) {
-            return  Normalalert(titleText: AppLocalizations.of(context)!.disconnectedStatus,bodyText: AppLocalizations.of(context)!.disconnectedFromDevice,titleStyle: alertTitleStyle,);
-          },
-          );
-          setState(() {
-            availableDevicesListIsVisible = false;
-          }); 
-
-        } else if(BTState.errorPermission2 == context.read<BluetoothModule>().btState){
-          await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-          Normalalert(titleText: AppLocalizations.of(context)!.permissionsError, bodyText: AppLocalizations.of(context)!.permissionsErrorMessage,titleStyle: alertTitleStyle));
-          setState(() {
-            availableDevicesListIsVisible = false;
-          }); 
-        } 
       }
     }
 
@@ -265,13 +275,12 @@ import 'package:flutter/material.dart';
     void handleDisconnectButtonPressed() async{
       context.read<BluetoothModule>().sendBytes(Uint8List.fromList([5]), "disconnectButton");
       context.read<BluetoothModule>().disconnectFromDevice();
-
+      //Freshly disconnected, didnt feel like altering this, I know I should have put ts in my state managemet function
       if(!mounted) return;
       if(BTState.disconnected ==  context.read<BluetoothModule>().btState){
         showDialog(context: context, builder: (context) {
           return  Normalalert(titleText: AppLocalizations.of(context)!.disconnectedStatus,bodyText: AppLocalizations.of(context)!.disconnectedFromDevice,);
         },);
-
       }
     }
     //asks the user for the device's password, default is 1234
@@ -284,25 +293,14 @@ import 'package:flutter/material.dart';
       if(!mounted) return;
 
       //shows the loading dialog again
-      showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
-        return CircularLoading(loadingText: "${AppLocalizations.of(context)!.connectingToDevice} ${context.read<BluetoothModule>().deviceInfo[mac]}");
-      },);
-
+      
       //and tries to connect to the device
-      await context.read<BluetoothModule>().connectToDevice(mac, pin);
+      if(await context.read<BluetoothModule>().connectToDevice(mac, pin) == FunctionState.failure) return;
 
       if(!mounted) return;
       //pops the loading dialog
       Navigator.of(context).pop();
 
       //checks if an error occured due to this action and shows the corresponding error
-      if (BTState.errorBonding == context.read<BluetoothModule>().btState){
-        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-        Normalalert(titleText: AppLocalizations.of(context)!.bondingError, bodyText: AppLocalizations.of(context)!.bondingErrorMessage,titleStyle: alertTitleStyle));
-      }
-      else if(BTState.errorConnection == context.read<BluetoothModule>().btState){
-        await showDialog<void>(context: context, barrierDismissible: false, builder: (context) => 
-        Normalalert(titleText: AppLocalizations.of(context)!.connectionError, bodyText: AppLocalizations.of(context)!.connectionErrorMessage,titleStyle: alertTitleStyle));
-      }
     }
   }
