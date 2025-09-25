@@ -110,10 +110,6 @@ class BluetoothModule with ChangeNotifier{
     }
 
   }
-  
-  Future<bool?> checkIfStreamIsBusy() async{
-    return await FlutterBluetoothSerial.instance.isDiscovering; 
-  }
 
   Future<FunctionState> deviceSearch() async{
     //Request BT Permission
