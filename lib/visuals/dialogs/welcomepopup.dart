@@ -39,7 +39,7 @@ class _WelcomePopUpState extends State<WelcomePopUp> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.all(10),
         width: 300,
-        height:300,
+        height:250,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
@@ -47,9 +47,9 @@ class _WelcomePopUpState extends State<WelcomePopUp> {
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(AppLocalizations.of(context)!.welcome, textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+            Text(AppLocalizations.of(context)!.welcome, textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
             Divider(thickness: 5, ),
-            SingleChildScrollView(child: Text(displayText[currentText])),
+            Text(displayText[currentText]),
             Spacer(),
             Row( 
               crossAxisAlignment: CrossAxisAlignment.center,

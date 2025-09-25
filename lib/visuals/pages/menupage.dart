@@ -106,6 +106,10 @@ import 'package:flutter/material.dart';
           showDialog<void>(context: context,barrierDismissible: false, builder: (context) {
             return CircularLoading(loadingText: AppLocalizations.of(context)!.connectingToDevice);
           },);
+        case BTState.startSearch:
+          showDialog(context: context, barrierDismissible: false, builder: (context) {
+            return CircularLoading(loadingText: AppLocalizations.of(context)!.searchingDevices);
+          },);  
         case BTState.connected:
           //when connected, the device list should be invis
           setState(() {
@@ -260,12 +264,12 @@ import 'package:flutter/material.dart';
         availableDevicesListIsVisible = !availableDevicesListIsVisible;
       });
       if(availableDevicesListIsVisible){
-          showDialog(context: context, barrierDismissible: false, builder: (context) {
-            return CircularLoading(loadingText: AppLocalizations.of(context)!.searchingDevices);
-          },);  
+        if(!(await context.read<BluetoothModule>().checkIfStreamIsBusy() ?? false)){
+          if(!mounted) return;
           await context.read<BluetoothModule>().deviceSearch();
           if(!mounted ||  context.read<BluetoothModule>().btState == BTState.errorPermission2) return;
           Navigator.of(context).pop();
+        }
       }
     }
 
