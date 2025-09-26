@@ -59,7 +59,7 @@ class BluetoothMenu extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20)),
             ),
             onPressed:(bluetoothButtonEnabled ? ((context.read<BluetoothModule>().bluetoothConnection?.isConnected??false)? onDisconnectPressed : onConnectPressed) : null),
-            child: Text((isListVisible ? "↓" : ((context.read<BluetoothModule>().bluetoothConnection?.isConnected ?? false) ? AppLocalizations.of(context)!.disconnect : AppLocalizations.of(context)!.connect)))
+            child: Text((isListVisible ? AppLocalizations.of(context)!.reload : ((context.read<BluetoothModule>().bluetoothConnection?.isConnected ?? false) ? AppLocalizations.of(context)!.disconnect : AppLocalizations.of(context)!.connect)))
           ),
           DeviceList(isListSupposedToBeVisible: isListVisible, onDeviceTap: onDeviceTap),
           

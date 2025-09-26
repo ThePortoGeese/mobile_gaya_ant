@@ -14,14 +14,16 @@ class BottomSheetGAYA extends StatelessWidget {
       height: 55,
       padding: EdgeInsetsGeometry.all(5),
       decoration: BoxDecoration(color:  Color(0xffFB923C), boxShadow:  [BoxShadow(color: Colors.black, blurRadius: 3.0, spreadRadius: 0.5)]),
-      child: Column(
-        children: [
-          Center(
-            child: Image.asset('assets/ispgayalogo.png', height: 35,),
-              
-          ),
-          Text(AppLocalizations.of(context)!.credits, style: TextStyle(color: Colors.white, fontSize: 7),)
-        ],
+        child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Center(
+              child: Image.asset('assets/ispgayalogo.png', height: 35,),
+                
+            ),
+            Text(AppLocalizations.of(context)!.credits, style: TextStyle(color: Colors.white, fontSize: 7),)
+          ],
+        ),
       )
     );
   }

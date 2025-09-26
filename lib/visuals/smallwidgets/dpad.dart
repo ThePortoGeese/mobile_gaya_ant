@@ -80,8 +80,6 @@ class _dPadState extends State<dPad> {
       final offsetFromCenter = local -  center;
 
       Direction dir = retrieveDirection(offsetFromCenter);
-    
-      //debugPrint(dir.toString());
 
       setState(() {
         currentDir = dir;

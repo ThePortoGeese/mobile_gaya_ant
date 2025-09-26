@@ -40,6 +40,7 @@
     "welcomeMessage2":"Seleciona o robô e introduz a palavra-chave dada. Esta app consegue apenas conectar ao robô e tentar conectar a outro dispositivo poderá resultar em comportamento inesperado.",
     "welcomeMessage3":"Quando conectado, os controlos do robô irão aparecer, permitindo-te controlo direto dos seus movimentos.",
     "welcomeMessage4":"Esta aplicação necessita de permissões bluetooth para funcionar.",
-    "credits": "Feito pelo David João no ISPGAYA"
+    "credits": "Feito pelo David João no ISPGAYA",
+    "reload":"Recarregar"
     
 }

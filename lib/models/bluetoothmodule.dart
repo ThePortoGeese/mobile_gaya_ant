@@ -57,7 +57,6 @@ class BluetoothModule with ChangeNotifier{
       if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied){
         btState = BTState.errorPermission1;
         notifyListeners();
-        debugPrint("------ I deniedm the permission? ----");
         return FunctionState.failure;
       }
     }
@@ -91,7 +90,7 @@ class BluetoothModule with ChangeNotifier{
     final b = await FlutterBluetoothSerial.instance.requestEnable();
     if(b!){
       btState = BTState.disconnected;
-      debugPrint("Success");
+      notifyListeners();
       return FunctionState.success;
     } else {
       return FunctionState.failure;
@@ -127,7 +126,7 @@ class BluetoothModule with ChangeNotifier{
       //clears previously detected devices
       deviceInfo.clear();
       notifyListeners();
-
+      await Future.delayed(const Duration(seconds: 0));
       await for( final event in FlutterBluetoothSerial.instance.startDiscovery()) {
         deviceInfo[event.device.address] =  event.device.name ?? "-unnamed-";
         btState = BTState.searching;
@@ -135,6 +134,7 @@ class BluetoothModule with ChangeNotifier{
       }
     } catch (e){
       btState = BTState.errorSearch;
+      notifyListeners();
       return FunctionState.failure;
     }
     return FunctionState.success;
@@ -172,12 +172,14 @@ class BluetoothModule with ChangeNotifier{
         btState = BTState.connected;
         currentMacAdress = mac;
       } else {
-        //debugPrint("Error Connection");
+
         btState = BTState.errorConnection;
+        notifyListeners();
         return FunctionState.failure;
       }
     } catch (e){
         btState = BTState.errorConnection;
+        notifyListeners();
         return FunctionState.failure;
     }
     notifyListeners();
@@ -203,7 +205,7 @@ class BluetoothModule with ChangeNotifier{
       bluetoothConnection?.output.add(i);
       await bluetoothConnection?.output.allSent;
       lastAction = i[0].toInt();
-      //debugPrint("Sent ${i.toString()}");
+
       notifyListeners();
       return;
     } catch (e){

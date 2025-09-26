@@ -130,4 +130,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get credits => 'Feito pelo David João no ISPGAYA';
+
+  @override
+  String get reload => 'Recarregar';
 }

@@ -2,7 +2,7 @@ name: ispgaya_ant
 description: "An application for controlling a small robot ant through bluetooth."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-
+version: 1.0.1+1
 environment:
   sdk: ^3.8.1
 

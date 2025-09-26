@@ -46,7 +46,6 @@ class _AntActionButtonState extends State<AntActionButton> {
           functionNumber = 0;
         }
 
-        //debugPrint(widget.text[0] + " " + functionNumber.toString());
         return 
           ElevatedButton(
             style: ButtonStyle(

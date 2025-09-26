@@ -132,4 +132,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get credits => 'Réalisé par David João à ISPGAYA';
+
+  @override
+  String get reload => 'Recharger';
 }

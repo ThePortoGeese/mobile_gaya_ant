@@ -111,14 +111,11 @@ class _AntBodyControlsState extends State<AntBodyControls> with TickerProviderSt
         headActive = !headActive;
       });
       context.read<BluetoothModule>().sendBytes(Uint8List.fromList([7]), widget.id);
-      //debugPrint("HeadState: $headActive");
     } else if(details.localPosition.dx > context.size!.width * 0.61){
-      //debugPrint("TailState1: $tailActive");
       setState(() {
         tailActive = !tailActive;
       });
       context.read<BluetoothModule>().sendBytes(Uint8List.fromList([6]), widget.id);
-      //debugPrint("TailState: $tailActive");
     }
   }
 }

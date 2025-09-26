@@ -40,5 +40,6 @@
     "welcomeMessage2":"Sélectionnez le robot et saisissez le mot de passe fourni. Cette application ne peut se connecter qu'au robot ; toute tentative de connexion à un autre appareil peut entraîner un comportement inattendu.",
     "welcomeMessage3":"Une fois connecté, les commandes du robot apparaîtront, vous permettant de contrôler directement ses mouvements.",
     "welcomeMessage4":"Cette application nécessite des autorisations Bluetooth pour fonctionner.",
-    "credits":"Réalisé par David João à ISPGAYA"
+    "credits":"Réalisé par David João à ISPGAYA",
+    "reload":"Recharger"
 }

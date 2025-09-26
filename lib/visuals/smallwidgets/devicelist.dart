@@ -38,7 +38,6 @@ class _DeviceListState extends State<DeviceList> with SingleTickerProviderStateM
 
   @override
   void didChangeDependencies() {
-    //debugPrint("Triggered");
     super.didChangeDependencies();
   }
 

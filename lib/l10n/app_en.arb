@@ -40,5 +40,6 @@
     "welcomeMessage2":"Select the robot and introduce the given password. Keep in mind that this app will only connect to the ant and trying to do anything else might cause unexpected behaviour.",
     "welcomeMessage3":"When connected, the controls for the ant will appear, allowing you direct control over its movements.",
     "welcomeMessage4":"This app requires you to grant it bluetooth permissions.",
-    "credits":"Made by David João at ISPGAYA"
+    "credits":"Made by David João at ISPGAYA",
+    "reload":"Reload"
 }

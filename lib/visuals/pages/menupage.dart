@@ -140,6 +140,7 @@ class _MenuPageState extends State<MenuPage> {
         });
       case BTState.errorSearch:
         if (loadingPopUp) {
+
           Navigator.of(context).pop();
           loadingPopUp = false;
           popUp = true;
@@ -147,8 +148,8 @@ class _MenuPageState extends State<MenuPage> {
             context: context,
             builder: (context) {
               return Normalalert(
-                titleText: AppLocalizations.of(context)!.disconnectedStatus,
-                bodyText: AppLocalizations.of(context)!.disconnectedFromDevice,
+                titleText: AppLocalizations.of(context)!.errorSearching,
+                bodyText: AppLocalizations.of(context)!.errorSearchingMessage,
                 titleStyle: alertTitleStyle,
               );
             },
@@ -183,6 +184,7 @@ class _MenuPageState extends State<MenuPage> {
       case BTState.connected:
         if (loadingPopUp) {
           Navigator.of(context).pop();
+          loadingPopUp = false;
           setState(() {
             availableDevicesListIsVisible = false;
           });
@@ -242,9 +244,9 @@ class _MenuPageState extends State<MenuPage> {
               titleStyle: alertTitleStyle,
             ),
           );
+          popUp = false;
           if (!mounted) return;
           context.read<BluetoothModule>().initializeBluetooth();
-          popUp = false;
         }
       case BTState.notAvailable:
         await showDialog<void>(
@@ -260,7 +262,7 @@ class _MenuPageState extends State<MenuPage> {
         );
         exit(0);
       default:
-      //debugPrint("Didnt implement ${context.read<BluetoothModule>().btState.toString()}");
+
     }
   }
 
@@ -395,9 +397,10 @@ class _MenuPageState extends State<MenuPage> {
       availableDevicesListIsVisible = !availableDevicesListIsVisible;
     });
     if (availableDevicesListIsVisible) {
-      await context.read<BluetoothModule>().deviceSearch();
-      if (!mounted) return;
-      Navigator.of(context).pop();
+      if(await context.read<BluetoothModule>().deviceSearch() == FunctionState.success) {
+        if(!mounted) return;
+        Navigator.of(context).pop();
+      }
     }
   }
 
